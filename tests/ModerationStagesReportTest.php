@@ -53,7 +53,9 @@ class ModerationStagesReportTest extends TestCase {
         $this->createCSVReport();
 
         $expectedBOM = chr(0xEF).chr(0xBB).chr(0xBF);
-        $BOMRead = fread($this->csvFile, strlen($expectedBOM));
+        $csvFile = fopen($this->filePath, 'r');
+        $BOMRead = fread($csvFile, strlen($expectedBOM));
+        fclose($csvFile);
 
         $this->assertEquals($expectedBOM, $BOMRead);
     }
