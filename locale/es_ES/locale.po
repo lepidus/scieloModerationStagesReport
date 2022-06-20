@@ -16,3 +16,18 @@ msgstr "Informe de Etapas de Moderación SciELO"
 
 msgid "plugins.reports.scieloModerationStagesReport.description"
 msgstr "Módulo de informe para informar las fechas de entrada en cada etapa de moderación de los envíos"
+
+msgid "plugins.generic.scieloModerationStages.stages.formatStage"
+msgstr "Moderación Previa del Formato"
+
+msgid "plugins.generic.scieloModerationStages.stages.contentStage"
+msgstr "Moderación Previa del Contenido"
+
+msgid "plugins.generic.scieloModerationStages.stages.areaStage"
+msgstr "Moderación del Área"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.submissionId"
+msgstr "ID de envío"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.moderationStage"
+msgstr "Etapa de moderación"
