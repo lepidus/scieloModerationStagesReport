@@ -16,7 +16,7 @@
 import('lib.pkp.classes.plugins.ReportPlugin');
 import('classes.submission.Submission');
 
-class scieloModerationStagesReportPlugin extends ReportPlugin {
+class ScieloModerationStagesReportPlugin extends ReportPlugin {
     public function register($category, $path, $mainContextId = null) {
         $success = parent::register($category, $path, $mainContextId);
 
