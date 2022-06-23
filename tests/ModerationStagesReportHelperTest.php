@@ -13,24 +13,26 @@ class ModerationStagesReportHelperTest extends TestCase {
     private function getModerationStageWithMockedDAO($hasModerators, $hasNotes, $mapUsersAssigned, $countAreaModerators): string {
         $mockedDAO = $this->createMock(ModerationStageDAO::class);
         $mockedDAO->method('getSubmissionModerationStage')->willReturn(null);
-        $mockedDAO->method('hasModerators')->willReturn($hasModerators);
-        $mockedDAO->method('hasNotes')->willReturn($hasNotes);
+        $mockedDAO->method('submissionHasModerators')->willReturn($hasModerators);
+        $mockedDAO->method('submissionHasNotes')->willReturn($hasNotes);
         $mockedDAO->method('countAreaModerators')->willReturn($countAreaModerators);
         
         if(!is_null($mapUsersAssigned))
-            $mockedDAO->method('hasUserAssigned')->willReturnMap($mapUsersAssigned);
+            $mockedDAO->method('submissionHasUserAssigned')->willReturnMap($mapUsersAssigned);
         else
-            $mockedDAO->method('hasUserAssigned')->willReturn(false);
+            $mockedDAO->method('submissionHasUserAssigned')->willReturn(false);
         
         $this->helper->setDAO($mockedDAO);
 
-        $submissionModerationStage = $this->helper->getSubmissionModerationStage($this->submissionId);
+        return $this->helper->getSubmissionModerationStage($this->submissionId);
     }
 
-    private function getUsersAssignedMap($usernames): array {
+    private function getUsersAssignedMap($assignedUsernames): array {
         $map = [];
-        foreach($usernames as $username) {
-            $map[] = [$username, $this->submissionId, true];
+        $commonUsernames = ["scielo-brasil", "carolinatanigushi", "abelpacker", "solangesantos"];
+        foreach($commonUsernames as $username) {
+            $userIsAssigned = in_array($username, $assignedUsernames);
+            $map[] = [$username, $this->submissionId, $userIsAssigned];
         }
 
         return $map;
@@ -38,7 +40,7 @@ class ModerationStagesReportHelperTest extends TestCase {
 
     public function testChecksFormatStageCaseOne(): void {
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(false, false, null, 0);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.formatStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.formatStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
@@ -46,7 +48,7 @@ class ModerationStagesReportHelperTest extends TestCase {
     public function testChecksFormatStageCaseTwo(): void {
         $mapUsersAssigned = $this->getUsersAssignedMap(["scielo-brasil", "carolinatanigushi"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 0);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.formatStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.formatStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
@@ -54,7 +56,7 @@ class ModerationStagesReportHelperTest extends TestCase {
     public function testChecksContentStageCaseOne(): void {
         $mapUsersAssigned = $this->getUsersAssignedMap(["abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 0);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.contentStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.contentStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
@@ -62,7 +64,7 @@ class ModerationStagesReportHelperTest extends TestCase {
     public function testChecksContentStageCaseTwo(): void {
         $mapUsersAssigned = $this->getUsersAssignedMap(["scielo-brasil", "carolinatanigushi", "abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 0);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.contentStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.contentStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
@@ -70,7 +72,7 @@ class ModerationStagesReportHelperTest extends TestCase {
     public function testChecksAreaStageCaseOne(): void {
         $mapUsersAssigned = $this->getUsersAssignedMap(["abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, true, $mapUsersAssigned, 0);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.areaStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.areaStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
@@ -78,7 +80,7 @@ class ModerationStagesReportHelperTest extends TestCase {
     public function testChecksAreaStageCaseTwo(): void {
         $mapUsersAssigned = $this->getUsersAssignedMap(["scielo-brasil", "carolinatanigushi", "abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, true, $mapUsersAssigned, 0);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.areaStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.areaStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
@@ -86,7 +88,7 @@ class ModerationStagesReportHelperTest extends TestCase {
     public function testChecksAreaStageCaseThree(): void {
         $mapUsersAssigned = $this->getUsersAssignedMap(["abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 1);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.areaStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.areaStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
@@ -94,28 +96,28 @@ class ModerationStagesReportHelperTest extends TestCase {
     public function testChecksAreaStageCaseFour(): void {
         $mapUsersAssigned = $this->getUsersAssignedMap(["scielo-brasil", "carolinatanigushi", "abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 1);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.areaStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.areaStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
 
     public function testChecksAreaStageCaseFive(): void {
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, null, 2);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.areaStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.areaStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
 
     public function testChecksAreaStageCaseSix(): void {
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(false, true, null, 0);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.areaStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.areaStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
 
     public function testChecksAreaStageCaseSeven(): void {
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(false, false, null, 1);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.areaStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.areaStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
@@ -141,7 +143,7 @@ class ModerationStagesReportHelperTest extends TestCase {
 
         $this->helper->setDAO($mockedDAO);
         $submissionModerationStage = $this->helper->getSubmissionModerationStage($this->submissionId);
-        $expectedModerationStage = __("plugins.generic.scieloModerationStages.stages.formatStage");
+        $expectedModerationStage = __("plugins.generic.scieloModerationStagesReport.stages.formatStage");
 
         $this->assertEquals($expectedModerationStage, $submissionModerationStage);
     }
