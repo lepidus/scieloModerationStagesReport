@@ -12,7 +12,9 @@ class ModerationStagesReportTest extends TestCase {
             1 => __("plugins.generic.scieloModerationStages.stages.formatStage"),
             2 => __("plugins.generic.scieloModerationStages.stages.contentStage")
         ];
-        $this->report = new ModerationStagesReport($submissions);
+
+        $nonDetectedSubmissions = [3, 4];
+        $this->report = new ModerationStagesReport($submissions, $nonDetectedSubmissions);
     }
 
     public function tearDown() : void {
@@ -30,13 +32,19 @@ class ModerationStagesReportTest extends TestCase {
         $this->createCSVReport();
         $csvRows = array_map('str_getcsv', file($this->filePath));
 
-        $expectedHeaders = [
+        $expectedFirstHeaders = [
             __("plugins.reports.scieloModerationStagesReport.headers.submissionId"),
             __("plugins.reports.scieloModerationStagesReport.headers.moderationStage")
         ];
         $firstRow = $csvRows[0];
 
-        $this->assertEquals($expectedHeaders, $firstRow);
+        $this->assertEquals($expectedFirstHeaders, $firstRow);
+
+        $expectedSecondHeaders = [
+            __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissionIds"),
+        ];
+        $fourthRow = $csvRows[4];
+        $this->assertEquals($expectedSecondHeaders, $fourthRow);
     }
     
     public function testGeneratedReportHasSubmissions(): void {
@@ -47,6 +55,16 @@ class ModerationStagesReportTest extends TestCase {
         $expectedSubmissionRow = ["1", __("plugins.generic.scieloModerationStages.stages.formatStage")];
 
         $this->assertEquals($expectedSubmissionRow, $secondRow);
+    }
+
+    public function testGeneratedReportHasNonDetectedSubmissions(): void {
+        $this->createCSVReport();
+        $csvRows = array_map('str_getcsv', file($this->filePath));
+
+        $fifthRow = $csvRows[5];
+        $expectedNonDetectedSubmissionRow = ["3"];
+
+        $this->assertEquals($expectedNonDetectedSubmissionRow, $fifthRow);
     }
 
     public function testGeneratedReportHasUTF8Bytes(): void {
