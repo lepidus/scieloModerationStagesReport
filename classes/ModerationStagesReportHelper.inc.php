@@ -1,6 +1,7 @@
 <?php
 
 import ('plugins.generic.scieloModerationStages.classes.ModerationStage');
+import ('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReport');
 import ('plugins.reports.scieloModerationStagesReport.classes.ModerationStageDAO');
 
 class ModerationStagesReportHelper {
@@ -11,6 +12,24 @@ class ModerationStagesReportHelper {
 
     public function setDAO($dao) {
         $this->moderationStageDAO = $dao;
+    }
+
+    public function createModerationStagesReport(): ModerationStagesReport {
+        $allSubmissionsIds = $this->moderationStageDAO->getAllSubmissionsIds();
+
+        $detectedSubmissions = [];
+        $nonDetectedSubmissions = [];
+
+        foreach($allSubmissionsIds as $submissionId) {
+            $moderationStage = $this->getSubmissionModerationStage($submissionId);
+
+            if(is_null($moderationStage))
+                $nonDetectedSubmissions[] = $submissionId;
+            else
+                $detectedSubmissions[$submissionId] = $moderationStage;
+        }
+
+        return new ModerationStagesReport($detectedSubmissions, $nonDetectedSubmissions);
     }
 
     private function getModerationStageName($stage) {

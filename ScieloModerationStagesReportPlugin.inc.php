@@ -15,6 +15,7 @@
 
 import('lib.pkp.classes.plugins.ReportPlugin');
 import('classes.submission.Submission');
+import ('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReportHelper');
 
 class ScieloModerationStagesReportPlugin extends ReportPlugin {
     public function register($category, $path, $mainContextId = null) {
@@ -39,6 +40,18 @@ class ScieloModerationStagesReportPlugin extends ReportPlugin {
     }
 
     public function display($args, $request) {
-        //generate report
+        $moderationStagesReportHelper = new ModerationStagesReportHelper();
+        $moderationStagesReport = $moderationStagesReportHelper->createModerationStagesReport();
+        
+        $this->emitHttpHeaders($request);
+        $csvFile = fopen('php://output', 'wt');
+        $moderationStagesReport->buildCSV($csvFile);
+    }
+
+    private function emitHttpHeaders($request) {
+        $context = $request->getContext();
+        header('content-type: text/comma-separated-values');
+        $acronym = PKPString::regexp_replace("/[^A-Za-z0-9 ]/", '', $context->getLocalizedAcronym());
+        header('content-disposition: attachment; filename=submissions' . $acronym . '-' . date('YmdHis') . '.csv');
     }
 }

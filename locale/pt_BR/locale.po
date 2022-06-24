@@ -31,3 +31,6 @@ msgstr "ID da submissão"
 
 msgid "plugins.reports.scieloModerationStagesReport.headers.moderationStage"
 msgstr "Estágio de moderação"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissionIds"
+msgstr "ID das submissões cujo estágio de moderação não foi detectado"
