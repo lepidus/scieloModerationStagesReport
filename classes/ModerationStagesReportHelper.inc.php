@@ -60,12 +60,12 @@ class ModerationStagesReportHelper {
     }
 
     public function checkSubmissionOnFormatStage($submissionId): bool {
-        $noModerators = !$this->moderationStageDAO->submissionHasModerators($submissionId);
+        $noResponsibles = !$this->moderationStageDAO->submissionHasResponsibles($submissionId);
         $scieloBrasilAssigned = $this->moderationStageDAO->submissionHasUserAssigned("scielo-brasil", $submissionId);
         $carolinaAssigned = $this->moderationStageDAO->submissionHasUserAssigned("carolinatanigushi", $submissionId);
         $noNotes = !$this->moderationStageDAO->submissionHasNotes($submissionId);
 
-        return ($noModerators || $scieloBrasilAssigned || $carolinaAssigned) && $noNotes;
+        return ($noResponsibles || $scieloBrasilAssigned || $carolinaAssigned) && $noNotes;
     }
 
     public function checkSubmissionOnContentStage($submissionId): bool {
@@ -82,12 +82,12 @@ class ModerationStagesReportHelper {
         $solangeAssigned = $this->moderationStageDAO->submissionHasUserAssigned("solangesantos", $submissionId);
         $countAreaModerators = $this->moderationStageDAO->countAreaModerators($submissionId);
         $hasNotes = $this->moderationStageDAO->submissionHasNotes($submissionId);
-        $hasModerators = $this->moderationStageDAO->submissionHasModerators($submissionId);
+        $hasResponsibles = $this->moderationStageDAO->submissionHasResponsibles($submissionId);
 
         return (($abelAssigned || $solangeAssigned) && $countAreaModerators == 0 && $hasNotes)
             || (($abelAssigned || $solangeAssigned) && $countAreaModerators == 1)
-            || ($hasModerators && $countAreaModerators >= 1)
-            || (!$hasModerators && ($hasNotes || $countAreaModerators == 1));
+            || ($hasResponsibles && $countAreaModerators >= 1)
+            || (!$hasResponsibles && ($hasNotes || $countAreaModerators == 1));
     }
 
 }

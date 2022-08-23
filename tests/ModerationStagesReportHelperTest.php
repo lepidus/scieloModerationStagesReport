@@ -10,10 +10,10 @@ class ModerationStagesReportHelperTest extends TestCase {
         $this->helper = new ModerationStagesReportHelper();
     }
 
-    private function getModerationStageWithMockedDAO($hasModerators, $hasNotes, $mapUsersAssigned, $countAreaModerators): string {
+    private function getModerationStageWithMockedDAO($hasResponsibles, $hasNotes, $mapUsersAssigned, $countAreaModerators): string {
         $mockedDAO = $this->createMock(ModerationStageDAO::class);
         $mockedDAO->method('getSubmissionModerationStage')->willReturn(null);
-        $mockedDAO->method('submissionHasModerators')->willReturn($hasModerators);
+        $mockedDAO->method('submissionHasResponsibles')->willReturn($hasResponsibles);
         $mockedDAO->method('submissionHasNotes')->willReturn($hasNotes);
         $mockedDAO->method('countAreaModerators')->willReturn($countAreaModerators);
         

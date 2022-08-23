@@ -54,12 +54,12 @@ class ModerationStageDAO extends DAO {
         return $countAssignedUsers == 1;
     }
     
-    public function submissionHasModerators($submissionId): bool {
-        return $this->countAssignedUsersOfGroup($submissionId, "Moderator") > 0;
+    public function submissionHasResponsibles($submissionId): bool {
+        return $this->countAssignedUsersOfGroup($submissionId, "RESP") > 0;
     }
     
     public function countAreaModerators($submissionId): int {
-        return $this->countAssignedUsersOfGroup($submissionId, "Area Moderator");
+        return $this->countAssignedUsersOfGroup($submissionId, "AM");
     }
     
     public function submissionHasNotes($submissionId): bool {
@@ -71,10 +71,10 @@ class ModerationStageDAO extends DAO {
         return $numNotes > 0;
     }
 
-    private function countAssignedUsersOfGroup($submissionId, $userGroupName): int {
+    private function countAssignedUsersOfGroup($submissionId, $userGroupAbbrev): int {
         $result = Capsule::table('user_group_settings')
-            ->where('setting_name', 'name')
-            ->where('setting_value', $userGroupName)
+            ->where('setting_name', 'abbrev')
+            ->where('setting_value', $userGroupAbbrev)
             ->select('user_group_id')
             ->first();
         $userGroupId = get_object_vars($result)['user_group_id'];
