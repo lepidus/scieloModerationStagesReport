@@ -21,7 +21,7 @@ msgid "plugins.reports.scieloModerationStagesReport.stages.formatStage"
 msgstr "Moderación Previa del Formato"
 
 msgid "plugins.reports.scieloModerationStagesReport.stages.contentStage"
-msgstr "Moderación Previa del Contenido"
+msgstr "Moderación Previa de Tipo de Manuscrito"
 
 msgid "plugins.reports.scieloModerationStagesReport.stages.areaStage"
 msgstr "Moderación del Área"
