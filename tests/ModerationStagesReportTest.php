@@ -9,8 +9,8 @@ class ModerationStagesReportTest extends TestCase {
 
     public function setUp() : void {
         $submissions = [
-            1 => __("plugins.generic.scieloModerationStages.stages.formatStage"),
-            2 => __("plugins.generic.scieloModerationStages.stages.contentStage")
+            1 => __("plugins.reports.scieloModerationStagesReport.stages.formatStage"),
+            2 => __("plugins.reports.scieloModerationStagesReport.stages.contentStage")
         ];
 
         $nonDetectedSubmissions = [3, 4];
@@ -52,7 +52,7 @@ class ModerationStagesReportTest extends TestCase {
         $csvRows = array_map('str_getcsv', file($this->filePath));
 
         $secondRow = $csvRows[1];
-        $expectedSubmissionRow = ["1", __("plugins.generic.scieloModerationStages.stages.formatStage")];
+        $expectedSubmissionRow = ["1", __("plugins.reports.scieloModerationStagesReport.stages.formatStage")];
 
         $this->assertEquals($expectedSubmissionRow, $secondRow);
     }

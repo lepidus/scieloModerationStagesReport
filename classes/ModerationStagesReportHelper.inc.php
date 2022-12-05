@@ -34,9 +34,9 @@ class ModerationStagesReportHelper {
 
     private function getModerationStageName($stage) {
         $stageMap = [
-            SCIELO_MODERATION_STAGE_FORMAT => 'plugins.generic.scieloModerationStagesReport.stages.formatStage',
-            SCIELO_MODERATION_STAGE_CONTENT => 'plugins.generic.scieloModerationStagesReport.stages.contentStage',
-            SCIELO_MODERATION_STAGE_AREA => 'plugins.generic.scieloModerationStagesReport.stages.areaStage',
+            SCIELO_MODERATION_STAGE_FORMAT => 'plugins.reports.scieloModerationStagesReport.stages.formatStage',
+            SCIELO_MODERATION_STAGE_CONTENT => 'plugins.reports.scieloModerationStagesReport.stages.contentStage',
+            SCIELO_MODERATION_STAGE_AREA => 'plugins.reports.scieloModerationStagesReport.stages.areaStage',
         ];
 
         return __($stageMap[$stage]);
