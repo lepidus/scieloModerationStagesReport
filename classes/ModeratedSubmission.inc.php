@@ -1,0 +1,88 @@
+<?php
+
+class ModeratedSubmission
+{
+    private $submissionId;
+    private $title;
+    private $moderationStage;
+    private $submitter;
+    private $status;
+    private $submitterIsScieloJournal;
+    private $responsibles;
+    private $areaModerators;
+    private $finalDecision;
+    private $notes;
+
+    public function __construct(int $submissionId, string $title, int $moderationStage, string $submitter, int $status, bool $submitterIsScieloJournal, array $responsibles, array $areaModerators, string $finalDecision, array $notes)
+    {
+        $this->submissionId = $submissionId;
+        $this->title = $title;
+        $this->moderationStage = $moderationStage;
+        $this->submitter = $submitter;
+        $this->status = $status;
+        $this->submitterIsScieloJournal = $submitterIsScieloJournal;
+        $this->responsibles = $responsibles;
+        $this->areaModerators = $areaModerators;
+        $this->finalDecision = $finalDecision;
+        $this->notes = $notes;
+    }
+
+    private function getModerationStage(): string
+    {
+        $stageMap = [
+            SCIELO_MODERATION_STAGE_FORMAT => 'plugins.reports.scieloModerationStagesReport.stages.formatStage',
+            SCIELO_MODERATION_STAGE_CONTENT => 'plugins.reports.scieloModerationStagesReport.stages.contentStage',
+            SCIELO_MODERATION_STAGE_AREA => 'plugins.reports.scieloModerationStagesReport.stages.areaStage',
+        ];
+
+        return __($stageMap[$this->moderationStage]);
+    }
+
+    private function getStatus(): string
+    {
+        $statusMap = [
+            STATUS_QUEUED => 'submissions.queued',
+            STATUS_PUBLISHED => 'submission.status.published',
+            STATUS_DECLINED => 'submission.status.declined',
+            STATUS_SCHEDULED => 'submission.status.scheduled'
+        ];
+
+        return __($statusMap[$this->status]);
+    }
+
+    private function getSubmitterIsScieloJournal(): string
+    {
+        return $this->submitterIsScieloJournal ? __("common.yes") : __("common.no");
+    }
+
+    private function getResponsibles(): string
+    {
+        return implode(";", $this->responsibles);
+    }
+
+    private function getAreaModerators(): string
+    {
+        return implode(";", $this->areaModerators);
+    }
+
+    private function getNotes(): string
+    {
+        return implode("; ", $this->notes);
+    }
+
+    public function asRecord(): array
+    {
+        return [
+            $this->submissionId,
+            $this->title,
+            $this->getModerationStage(),
+            $this->submitter,
+            $this->getStatus(),
+            $this->getSubmitterIsScieloJournal(),
+            $this->getResponsibles(),
+            $this->getAreaModerators(),
+            $this->finalDecision,
+            $this->getNotes()
+        ];
+    }
+}
