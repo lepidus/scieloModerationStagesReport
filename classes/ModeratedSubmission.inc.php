@@ -74,8 +74,11 @@ class ModeratedSubmission
         return implode(";", $this->areaModerators);
     }
 
-    private function getNotes(): string
+    public function getNotes(): string
     {
+        if(empty($this->notes))
+            return __('plugins.reports.scieloModerationStagesReport.noNotes');
+        
         return implode("; ", $this->notes);
     }
 

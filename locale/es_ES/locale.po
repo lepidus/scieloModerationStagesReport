@@ -35,6 +35,9 @@ msgstr "Sin responsables asignados"
 msgid "plugins.reports.scieloModerationStagesReport.noAreaModerators"
 msgstr "Sin moderadores de área asignados"
 
+msgid "plugins.reports.scieloModerationStagesReport.noNotes"
+msgstr "Sin notas"
+
 msgid "plugins.reports.scieloModerationStagesReport.headers.submissionId"
 msgstr "ID de envío"
 
