@@ -66,8 +66,11 @@ class ModeratedSubmission
         return implode(";", $this->responsibles);
     }
 
-    private function getAreaModerators(): string
+    public function getAreaModerators(): string
     {
+        if(empty($this->areaModerators))
+            return __('plugins.reports.scieloModerationStagesReport.noAreaModerators');
+        
         return implode(";", $this->areaModerators);
     }
 

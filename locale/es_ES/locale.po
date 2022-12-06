@@ -30,7 +30,10 @@ msgid "plugins.reports.scieloModerationStagesReport.stages.noModerationStage"
 msgstr "Sin etapa de moderación"
 
 msgid "plugins.reports.scieloModerationStagesReport.noResponsibles"
-msgstr "Sin responsable designado"
+msgstr "Sin responsables asignados"
+
+msgid "plugins.reports.scieloModerationStagesReport.noAreaModerators"
+msgstr "Sin moderadores de área asignados"
 
 msgid "plugins.reports.scieloModerationStagesReport.headers.submissionId"
 msgstr "ID de envío"
