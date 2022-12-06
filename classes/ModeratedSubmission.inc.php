@@ -13,7 +13,7 @@ class ModeratedSubmission
     private $finalDecision;
     private $notes;
 
-    public function __construct(int $submissionId, string $title, int $moderationStage, string $submitter, int $status, bool $submitterIsScieloJournal, array $responsibles, array $areaModerators, string $finalDecision, array $notes)
+    public function __construct(int $submissionId, string $title, ?int $moderationStage, string $submitter, int $status, bool $submitterIsScieloJournal, array $responsibles, array $areaModerators, string $finalDecision, array $notes)
     {
         $this->submissionId = $submissionId;
         $this->title = $title;
@@ -27,8 +27,11 @@ class ModeratedSubmission
         $this->notes = $notes;
     }
 
-    private function getModerationStage(): string
+    public function getModerationStage(): string
     {
+        if(is_null($this->moderationStage))
+            return __('plugins.reports.scieloModerationStagesReport.stages.noModerationStage');
+        
         $stageMap = [
             SCIELO_MODERATION_STAGE_FORMAT => 'plugins.reports.scieloModerationStagesReport.stages.formatStage',
             SCIELO_MODERATION_STAGE_CONTENT => 'plugins.reports.scieloModerationStagesReport.stages.contentStage',

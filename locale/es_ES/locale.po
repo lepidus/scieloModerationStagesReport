@@ -26,6 +26,9 @@ msgstr "Moderación Previa de Tipo de Manuscrito"
 msgid "plugins.reports.scieloModerationStagesReport.stages.areaStage"
 msgstr "Moderación del Área"
 
+msgid "plugins.reports.scieloModerationStagesReport.stages.noModerationStage"
+msgstr "Sin etapa de moderación"
+
 msgid "plugins.reports.scieloModerationStagesReport.headers.submissionId"
 msgstr "ID de envío"
 

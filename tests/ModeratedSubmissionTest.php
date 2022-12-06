@@ -46,4 +46,12 @@ class ModeratedSubmissionTest extends TestCase
         $this->assertEquals($expectedRecord, $this->submission->asRecord());
     }
 
+    public function testSubmissionHasNoModerationStage(): void
+    {
+        $submission = new ModeratedSubmission($this->submissionId, $this->title, null, $this->submitterName, $this->submissionStatus, $this->submitterIsScieloJournal, $this->responsibles, $this->areaModerators, $this->finalDecision, $this->notes);
+
+        $messageNoModerationStage = __('plugins.reports.scieloModerationStagesReport.stages.noModerationStage');
+        $this->assertEquals($messageNoModerationStage, $submission->getModerationStage());
+    }
+
 }
