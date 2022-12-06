@@ -58,8 +58,11 @@ class ModeratedSubmission
         return $this->submitterIsScieloJournal ? __("common.yes") : __("common.no");
     }
 
-    private function getResponsibles(): string
+    public function getResponsibles(): string
     {
+        if(empty($this->responsibles))
+            return __('plugins.reports.scieloModerationStagesReport.noResponsibles');
+        
         return implode(";", $this->responsibles);
     }
 

@@ -29,6 +29,9 @@ msgstr "Moderação de Área"
 msgid "plugins.reports.scieloModerationStagesReport.stages.noModerationStage"
 msgstr "Sem estágio de moderação"
 
+msgid "plugins.reports.scieloModerationStagesReport.noResponsibles"
+msgstr "Sem responsáveis designados"
+
 msgid "plugins.reports.scieloModerationStagesReport.headers.submissionId"
 msgstr "ID da submissão"
 

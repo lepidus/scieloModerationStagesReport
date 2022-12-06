@@ -54,4 +54,12 @@ class ModeratedSubmissionTest extends TestCase
         $this->assertEquals($messageNoModerationStage, $submission->getModerationStage());
     }
 
+    public function testSubmissionHasNoResponsibles(): void
+    {
+        $submission = new ModeratedSubmission($this->submissionId, $this->title, $this->moderationStage, $this->submitterName, $this->submissionStatus, $this->submitterIsScieloJournal, [], $this->areaModerators, $this->finalDecision, $this->notes);
+
+        $messageNoResponsibles = __('plugins.reports.scieloModerationStagesReport.noResponsibles');
+        $this->assertEquals($messageNoResponsibles, $submission->getResponsibles());
+    }
+
 }
