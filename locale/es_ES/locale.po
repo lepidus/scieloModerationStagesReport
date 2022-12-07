@@ -41,8 +41,32 @@ msgstr "Sin notas"
 msgid "plugins.reports.scieloModerationStagesReport.headers.submissionId"
 msgstr "ID de envío"
 
+msgid "plugins.reports.scieloModerationStagesReport.headers.title"
+msgstr "Título"
+
 msgid "plugins.reports.scieloModerationStagesReport.headers.moderationStage"
 msgstr "Etapa de moderación"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.submitter"
+msgstr "Remitente"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.status"
+msgstr "Etapa"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.scieloJournal"
+msgstr "Periódico SciELO"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.responsibles"
+msgstr "Responsables"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.areaModerators"
+msgstr "Moderador de área"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.finalDecision"
+msgstr "Decisión final"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.notes"
+msgstr "Notas"
 
 msgid "plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissionIds"
 msgstr "ID de envíos cuya etapa de moderación no fue detectada"

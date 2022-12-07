@@ -14,7 +14,15 @@ class ModerationStagesReport {
     private function getHeaders(): array {
         return [
             __("plugins.reports.scieloModerationStagesReport.headers.submissionId"),
-            __("plugins.reports.scieloModerationStagesReport.headers.moderationStage")
+            __("plugins.reports.scieloModerationStagesReport.headers.title"),
+            __("plugins.reports.scieloModerationStagesReport.headers.moderationStage"),
+            __("plugins.reports.scieloModerationStagesReport.headers.submitter"),
+            __("plugins.reports.scieloModerationStagesReport.headers.status"),
+            __("plugins.reports.scieloModerationStagesReport.headers.scieloJournal"),
+            __("plugins.reports.scieloModerationStagesReport.headers.responsibles"),
+            __("plugins.reports.scieloModerationStagesReport.headers.areaModerators"),
+            __("plugins.reports.scieloModerationStagesReport.headers.finalDecision"),
+            __("plugins.reports.scieloModerationStagesReport.headers.notes")
         ];
     }
 

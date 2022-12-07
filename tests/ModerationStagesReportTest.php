@@ -28,25 +28,38 @@ class ModerationStagesReportTest extends TestCase {
         fclose($csvFile);
     }
 
-    public function testGeneratedReportHasHeaders(): void {
+    public function testGeneratedReportHasPrimaryHeaders(): void {
         $this->createCSVReport();
         $csvRows = array_map('str_getcsv', file($this->filePath));
 
-        $expectedFirstHeaders = [
+        $expectedPrimaryHeaders = [
             __("plugins.reports.scieloModerationStagesReport.headers.submissionId"),
-            __("plugins.reports.scieloModerationStagesReport.headers.moderationStage")
+            __("plugins.reports.scieloModerationStagesReport.headers.title"),
+            __("plugins.reports.scieloModerationStagesReport.headers.moderationStage"),
+            __("plugins.reports.scieloModerationStagesReport.headers.submitter"),
+            __("plugins.reports.scieloModerationStagesReport.headers.status"),
+            __("plugins.reports.scieloModerationStagesReport.headers.scieloJournal"),
+            __("plugins.reports.scieloModerationStagesReport.headers.responsibles"),
+            __("plugins.reports.scieloModerationStagesReport.headers.areaModerators"),
+            __("plugins.reports.scieloModerationStagesReport.headers.finalDecision"),
+            __("plugins.reports.scieloModerationStagesReport.headers.notes")
         ];
         $firstRow = $csvRows[0];
 
-        $this->assertEquals($expectedFirstHeaders, $firstRow);
-
-        $expectedSecondHeaders = [
-            __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissionIds"),
-        ];
-        $fourthRow = $csvRows[4];
-        $this->assertEquals($expectedSecondHeaders, $fourthRow);
+        $this->assertEquals($expectedPrimaryHeaders, $firstRow);
     }
     
+    public function testGeneratedReportHasSecondaryHeaders(): void {
+        $this->createCSVReport();
+        $csvRows = array_map('str_getcsv', file($this->filePath));
+        
+        $expectedSecondaryHeaders = [
+            __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissionIds"),
+        ];
+        $fifthRow = $csvRows[4];
+        $this->assertEquals($expectedSecondaryHeaders, $fifthRow);
+    }
+
     public function testGeneratedReportHasSubmissions(): void {
         $this->createCSVReport();
         $csvRows = array_map('str_getcsv', file($this->filePath));
