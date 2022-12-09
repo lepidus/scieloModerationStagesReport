@@ -6,8 +6,10 @@ class ModerationStagesReportTest extends TestCase {
     
     private $report;
     private $filePath = "/tmp/test.csv";
+    private $UTF8_BOM;
 
     public function setUp() : void {
+        $this->UTF8_BOM = chr(0xEF).chr(0xBB).chr(0xBF);
         $submissions = [
             1 => __("plugins.reports.scieloModerationStagesReport.stages.formatStage"),
             2 => __("plugins.reports.scieloModerationStagesReport.stages.contentStage")
@@ -32,8 +34,7 @@ class ModerationStagesReportTest extends TestCase {
         $this->createCSVReport();
         $csvFile = fopen($this->filePath, 'r');
         
-        $utf8BOM = chr(0xEF).chr(0xBB).chr(0xBF);
-        fread($csvFile, strlen($utf8BOM));
+        fread($csvFile, strlen($this->UTF8_BOM));
 
         $firstRow = fgetcsv($csvFile);
         $expectedPrimaryHeaders = [
@@ -87,12 +88,11 @@ class ModerationStagesReportTest extends TestCase {
     public function testGeneratedReportHasUTF8Bytes(): void {
         $this->createCSVReport();
 
-        $expectedBOM = chr(0xEF).chr(0xBB).chr(0xBF);
         $csvFile = fopen($this->filePath, 'r');
-        $BOMRead = fread($csvFile, strlen($expectedBOM));
+        $BOMRead = fread($csvFile, strlen($this->UTF8_BOM));
         fclose($csvFile);
 
-        $this->assertEquals($expectedBOM, $BOMRead);
+        $this->assertEquals($this->UTF8_BOM, $BOMRead);
     }
 
 }
