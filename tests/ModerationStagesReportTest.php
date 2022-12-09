@@ -58,7 +58,7 @@ class ModerationStagesReportTest extends TestCase {
         $csvRows = array_map('str_getcsv', file($this->filePath));
         
         $expectedSecondaryHeaders = [
-            __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissionIds"),
+            __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissions"),
         ];
         $fifthRow = $csvRows[4];
         $this->assertEquals($expectedSecondaryHeaders, $fifthRow);

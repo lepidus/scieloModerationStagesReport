@@ -28,7 +28,7 @@ class ModerationStagesReport {
 
     private function getSecondHeaders(): array {
         return [
-            __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissionIds")
+            __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissions")
         ];
     }
 

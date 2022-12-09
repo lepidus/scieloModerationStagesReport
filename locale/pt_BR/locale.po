@@ -68,5 +68,5 @@ msgstr "Decisão final"
 msgid "plugins.reports.scieloModerationStagesReport.headers.notes"
 msgstr "Notas"
 
-msgid "plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissionIds"
-msgstr "ID das submissões cujo estágio de moderação não foi detectado"
+msgid "plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissions"
+msgstr "Submissões cujo estágio de moderação não foi detectado"
