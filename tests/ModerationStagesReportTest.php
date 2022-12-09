@@ -30,8 +30,12 @@ class ModerationStagesReportTest extends TestCase {
 
     public function testGeneratedReportHasPrimaryHeaders(): void {
         $this->createCSVReport();
-        $csvRows = array_map('str_getcsv', file($this->filePath));
+        $csvFile = fopen($this->filePath, 'r');
+        
+        $utf8BOM = chr(0xEF).chr(0xBB).chr(0xBF);
+        fread($csvFile, strlen($utf8BOM));
 
+        $firstRow = fgetcsv($csvFile);
         $expectedPrimaryHeaders = [
             __("plugins.reports.scieloModerationStagesReport.headers.submissionId"),
             __("plugins.reports.scieloModerationStagesReport.headers.title"),
@@ -44,7 +48,7 @@ class ModerationStagesReportTest extends TestCase {
             __("plugins.reports.scieloModerationStagesReport.headers.finalDecision"),
             __("plugins.reports.scieloModerationStagesReport.headers.notes")
         ];
-        $firstRow = $csvRows[0];
+        fclose($csvFile);
 
         $this->assertEquals($expectedPrimaryHeaders, $firstRow);
     }
