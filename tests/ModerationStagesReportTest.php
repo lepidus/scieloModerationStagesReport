@@ -1,6 +1,10 @@
 <?php
+
 use PHPUnit\Framework\TestCase;
-import ('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReport');
+
+import('classes.submission.Submission');
+import('plugins.generic.scieloModerationStages.classes.ModerationStage');
+import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReport');
 
 class ModerationStagesReportTest extends TestCase {
     
@@ -11,11 +15,13 @@ class ModerationStagesReportTest extends TestCase {
     public function setUp() : void {
         $this->UTF8_BOM = chr(0xEF).chr(0xBB).chr(0xBF);
         $submissions = [
-            1 => __("plugins.reports.scieloModerationStagesReport.stages.formatStage"),
-            2 => __("plugins.reports.scieloModerationStagesReport.stages.contentStage")
+            new ModeratedSubmission(1, 'Submission 1', SCIELO_MODERATION_STAGE_FORMAT, 'Author 1', STATUS_PUBLISHED, false, ['Responsible 1', 'Responsible 2'], ['Moderator 1', 'Moderator 2'], 'Accepted', ['Very good'])
         ];
 
-        $nonDetectedSubmissions = [3, 4];
+        $nonDetectedSubmissions = [
+            new ModeratedSubmission(2, 'Submission 2', null, 'Author 2', STATUS_DECLINED, false, ['Responsible 1', 'Responsible 2'], ['Moderator 1', 'Moderator 2'], 'Declined', ['Not that good'])
+        ];
+        
         $this->report = new ModerationStagesReport($submissions, $nonDetectedSubmissions);
     }
 
@@ -61,16 +67,19 @@ class ModerationStagesReportTest extends TestCase {
         $expectedSecondaryHeaders = [
             __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissions"),
         ];
-        $fifthRow = $csvRows[4];
-        $this->assertEquals($expectedSecondaryHeaders, $fifthRow);
+        $fourthRow = $csvRows[3];
+        $this->assertEquals($expectedSecondaryHeaders, $fourthRow);
     }
 
     public function testGeneratedReportHasSubmissions(): void {
         $this->createCSVReport();
         $csvRows = array_map('str_getcsv', file($this->filePath));
-
         $secondRow = $csvRows[1];
-        $expectedSubmissionRow = ["1", __("plugins.reports.scieloModerationStagesReport.stages.formatStage")];
+        
+        $formatModerationTxt = __('plugins.reports.scieloModerationStagesReport.stages.formatStage');
+        $statusTxt = __('submission.status.published');
+        $submitterIsScieloJournalTxt = __('common.no');
+        $expectedSubmissionRow = ['1', 'Submission 1', $formatModerationTxt, 'Author 1', $statusTxt, $submitterIsScieloJournalTxt, 'Responsible 1;Responsible 2', 'Moderator 1;Moderator 2', 'Accepted', 'Very good'];
 
         $this->assertEquals($expectedSubmissionRow, $secondRow);
     }
@@ -78,9 +87,12 @@ class ModerationStagesReportTest extends TestCase {
     public function testGeneratedReportHasNonDetectedSubmissions(): void {
         $this->createCSVReport();
         $csvRows = array_map('str_getcsv', file($this->filePath));
+        $fifthRow = $csvRows[4];
 
-        $fifthRow = $csvRows[5];
-        $expectedNonDetectedSubmissionRow = ["3"];
+        $messageNoModerationStage = __('plugins.reports.scieloModerationStagesReport.stages.noModerationStage');
+        $statusTxt = __('submission.status.declined');
+        $submitterIsScieloJournalTxt = __('common.no');
+        $expectedNonDetectedSubmissionRow = ['2', 'Submission 2', $messageNoModerationStage, 'Author 2', $statusTxt, $submitterIsScieloJournalTxt, 'Responsible 1;Responsible 2', 'Moderator 1;Moderator 2', 'Declined', 'Not that good'];
 
         $this->assertEquals($expectedNonDetectedSubmissionRow, $fifthRow);
     }

@@ -1,5 +1,7 @@
 <?php
 
+import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmission');
+
 class ModerationStagesReport {
     private $submissions;
     private $nonDetectedSubmissions;
@@ -36,16 +38,16 @@ class ModerationStagesReport {
         fprintf($fileDescriptor, $this->UTF8_BOM);
         fputcsv($fileDescriptor, $this->getHeaders());
 
-        foreach($this->submissions as $submissionId => $moderationStage){
-            fputcsv($fileDescriptor, [$submissionId, $moderationStage]);
+        foreach($this->submissions as $submission){
+            fputcsv($fileDescriptor, $submission->asRecord());
         }
 
         $blankLine = ["", "", ""];
         fputcsv($fileDescriptor, $blankLine);
         fputcsv($fileDescriptor, $this->getSecondHeaders());
 
-        foreach($this->nonDetectedSubmissions as $submissionId){
-            fputcsv($fileDescriptor, [$submissionId]);
+        foreach($this->nonDetectedSubmissions as $nonDetectedSubmission){
+            fputcsv($fileDescriptor, $nonDetectedSubmission->asRecord());
         }
     }
 }
