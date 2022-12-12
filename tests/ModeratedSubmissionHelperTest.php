@@ -143,7 +143,7 @@ class ModeratedSubmissionHelperTest extends TestCase
 
     public function testCantDetectModerationStage(): void
     {
-        $mockedHelper = $this->createMock(ModerationStagesReportHelper::class);
+        $mockedHelper = $this->createMock(ModeratedSubmissionHelper::class);
         $mockedHelper->method('checkSubmissionOnFormatStage')->willReturn(false);
         $mockedHelper->method('checkSubmissionOnContentStage')->willReturn(false);
         $mockedHelper->method('checkSubmissionOnAreaStage')->willReturn(false);
