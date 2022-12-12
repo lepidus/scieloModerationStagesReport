@@ -16,34 +16,23 @@ class ModeratedSubmissionHelper
         $this->moderationStageDAO = $dao;
     }
 
-    private function getModerationStageName($stage)
-    {
-        $stageMap = [
-            SCIELO_MODERATION_STAGE_FORMAT => 'plugins.reports.scieloModerationStagesReport.stages.formatStage',
-            SCIELO_MODERATION_STAGE_CONTENT => 'plugins.reports.scieloModerationStagesReport.stages.contentStage',
-            SCIELO_MODERATION_STAGE_AREA => 'plugins.reports.scieloModerationStagesReport.stages.areaStage',
-        ];
-
-        return __($stageMap[$stage]);
-    }
-
     public function getSubmissionModerationStage($submissionId)
     {
         $submissionStage = $this->moderationStageDAO->getSubmissionModerationStage($submissionId);
         if (!is_null($submissionStage)) {
-            return $this->getModerationStageName($submissionStage);
+            return $submissionStage;
         }
 
         if ($this->checkSubmissionOnAreaStage($submissionId)) {
-            return $this->getModerationStageName(SCIELO_MODERATION_STAGE_AREA);
+            return SCIELO_MODERATION_STAGE_AREA;
         }
 
         if ($this->checkSubmissionOnContentStage($submissionId)) {
-            return $this->getModerationStageName(SCIELO_MODERATION_STAGE_CONTENT);
+            return SCIELO_MODERATION_STAGE_CONTENT;
         }
 
         if ($this->checkSubmissionOnFormatStage($submissionId)) {
-            return $this->getModerationStageName(SCIELO_MODERATION_STAGE_FORMAT);
+            return SCIELO_MODERATION_STAGE_FORMAT;
         }
 
         return null;
