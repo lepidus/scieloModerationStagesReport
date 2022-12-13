@@ -17,20 +17,56 @@ msgstr "Relatório de Estágios de Moderação SciELO"
 msgid "plugins.reports.scieloModerationStagesReport.description"
 msgstr "Plugin de relatório para informar as datas de entrada em cada estágio de moderação das submissões"
 
-msgid "plugins.generic.scieloModerationStagesReport.stages.formatStage"
+msgid "plugins.reports.scieloModerationStagesReport.stages.formatStage"
 msgstr "Pré-Moderação de Formato"
 
-msgid "plugins.generic.scieloModerationStagesReport.stages.contentStage"
+msgid "plugins.reports.scieloModerationStagesReport.stages.contentStage"
 msgstr "Pré-Moderação de Tipo de Manuscrito"
 
-msgid "plugins.generic.scieloModerationStagesReport.stages.areaStage"
+msgid "plugins.reports.scieloModerationStagesReport.stages.areaStage"
 msgstr "Moderação de Área"
+
+msgid "plugins.reports.scieloModerationStagesReport.stages.noModerationStage"
+msgstr "Sem estágio de moderação"
+
+msgid "plugins.reports.scieloModerationStagesReport.noResponsibles"
+msgstr "Sem responsáveis designados"
+
+msgid "plugins.reports.scieloModerationStagesReport.noAreaModerators"
+msgstr "Sem moderadores de área designados"
+
+msgid "plugins.reports.scieloModerationStagesReport.noNotes"
+msgstr "Sem notas"
 
 msgid "plugins.reports.scieloModerationStagesReport.headers.submissionId"
 msgstr "ID da submissão"
 
+msgid "plugins.reports.scieloModerationStagesReport.headers.title"
+msgstr "Título"
+
 msgid "plugins.reports.scieloModerationStagesReport.headers.moderationStage"
 msgstr "Estágio de moderação"
 
-msgid "plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissionIds"
-msgstr "ID das submissões cujo estágio de moderação não foi detectado"
+msgid "plugins.reports.scieloModerationStagesReport.headers.submitter"
+msgstr "Submissor"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.status"
+msgstr "Status"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.scieloJournal"
+msgstr "Periódico SciELO"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.responsibles"
+msgstr "Responsáveis"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.areaModerators"
+msgstr "Moderadores de área"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.finalDecision"
+msgstr "Decisão final"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.notes"
+msgstr "Notas"
+
+msgid "plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissions"
+msgstr "Submissões cujo estágio de moderação não foi detectado"

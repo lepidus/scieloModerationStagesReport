@@ -1,5 +1,7 @@
 <?php
 
+import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmission');
+
 class ModerationStagesReport {
     private $submissions;
     private $nonDetectedSubmissions;
@@ -14,13 +16,21 @@ class ModerationStagesReport {
     private function getHeaders(): array {
         return [
             __("plugins.reports.scieloModerationStagesReport.headers.submissionId"),
-            __("plugins.reports.scieloModerationStagesReport.headers.moderationStage")
+            __("plugins.reports.scieloModerationStagesReport.headers.title"),
+            __("plugins.reports.scieloModerationStagesReport.headers.moderationStage"),
+            __("plugins.reports.scieloModerationStagesReport.headers.submitter"),
+            __("plugins.reports.scieloModerationStagesReport.headers.status"),
+            __("plugins.reports.scieloModerationStagesReport.headers.scieloJournal"),
+            __("plugins.reports.scieloModerationStagesReport.headers.responsibles"),
+            __("plugins.reports.scieloModerationStagesReport.headers.areaModerators"),
+            __("plugins.reports.scieloModerationStagesReport.headers.finalDecision"),
+            __("plugins.reports.scieloModerationStagesReport.headers.notes")
         ];
     }
 
     private function getSecondHeaders(): array {
         return [
-            __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissionIds")
+            __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissions")
         ];
     }
 
@@ -28,16 +38,16 @@ class ModerationStagesReport {
         fprintf($fileDescriptor, $this->UTF8_BOM);
         fputcsv($fileDescriptor, $this->getHeaders());
 
-        foreach($this->submissions as $submissionId => $moderationStage){
-            fputcsv($fileDescriptor, [$submissionId, $moderationStage]);
+        foreach($this->submissions as $submission){
+            fputcsv($fileDescriptor, $submission->asRecord());
         }
 
         $blankLine = ["", "", ""];
         fputcsv($fileDescriptor, $blankLine);
         fputcsv($fileDescriptor, $this->getSecondHeaders());
 
-        foreach($this->nonDetectedSubmissions as $submissionId){
-            fputcsv($fileDescriptor, [$submissionId]);
+        foreach($this->nonDetectedSubmissions as $nonDetectedSubmission){
+            fputcsv($fileDescriptor, $nonDetectedSubmission->asRecord());
         }
     }
 }
