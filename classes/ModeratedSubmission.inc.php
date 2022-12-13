@@ -50,6 +50,7 @@ class ModeratedSubmission
 
     private function getStatus(): string
     {
+        AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION);
         $statusMap = [
             STATUS_QUEUED => 'submissions.queued',
             STATUS_PUBLISHED => 'submission.status.published',
@@ -86,7 +87,7 @@ class ModeratedSubmission
         if(empty($this->notes))
             return __('plugins.reports.scieloModerationStagesReport.noNotes');
         
-        return implode("; ", $this->notes);
+        return trim(preg_replace('/\s+/', ' ', "Nota: " . implode(" Nota: ", $this->notes)));
     }
 
     public function asRecord(): array

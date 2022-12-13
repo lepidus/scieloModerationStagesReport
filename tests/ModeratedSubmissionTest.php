@@ -41,7 +41,7 @@ class ModeratedSubmissionTest extends TestCase
             'Carlos Alberto;Vinicius Dias',
             'Seizi Tagima;Tiguez',
             'Accepted',
-            'These schematics are really robust!; The quality is very good'
+            'Nota: These schematics are really robust! Nota: The quality is very good'
         ];
         $this->assertEquals($expectedRecord, $this->submission->asRecord());
     }

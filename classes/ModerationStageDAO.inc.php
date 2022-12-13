@@ -15,6 +15,9 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Support\Collection;
 
 class ModerationStageDAO extends DAO {
+    
+    private const SUBMISSION_STAGE_ID = 5;
+    
     public function getAllSubmissionsIds(): array {
         $result = Capsule::table('submissions')
             ->whereNotNull('date_submitted')
@@ -150,7 +153,7 @@ class ModerationStageDAO extends DAO {
         return false;
     }
 
-    public function getSubmissionStatus(): int
+    public function getSubmissionStatus($submissionId): int
     {
         $result = Capsule::table('submissions')
         ->where('submission_id', '=', $submissionId)

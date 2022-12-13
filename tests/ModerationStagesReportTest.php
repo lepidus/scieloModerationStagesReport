@@ -79,7 +79,7 @@ class ModerationStagesReportTest extends TestCase {
         $formatModerationTxt = __('plugins.reports.scieloModerationStagesReport.stages.formatStage');
         $statusTxt = __('submission.status.published');
         $submitterIsScieloJournalTxt = __('common.no');
-        $expectedSubmissionRow = ['1', 'Submission 1', $formatModerationTxt, 'Author 1', $statusTxt, $submitterIsScieloJournalTxt, 'Responsible 1;Responsible 2', 'Moderator 1;Moderator 2', 'Accepted', 'Very good'];
+        $expectedSubmissionRow = ['1', 'Submission 1', $formatModerationTxt, 'Author 1', $statusTxt, $submitterIsScieloJournalTxt, 'Responsible 1;Responsible 2', 'Moderator 1;Moderator 2', 'Accepted', 'Nota: Very good'];
 
         $this->assertEquals($expectedSubmissionRow, $secondRow);
     }
@@ -92,7 +92,7 @@ class ModerationStagesReportTest extends TestCase {
         $messageNoModerationStage = __('plugins.reports.scieloModerationStagesReport.stages.noModerationStage');
         $statusTxt = __('submission.status.declined');
         $submitterIsScieloJournalTxt = __('common.no');
-        $expectedNonDetectedSubmissionRow = ['2', 'Submission 2', $messageNoModerationStage, 'Author 2', $statusTxt, $submitterIsScieloJournalTxt, 'Responsible 1;Responsible 2', 'Moderator 1;Moderator 2', 'Declined', 'Not that good'];
+        $expectedNonDetectedSubmissionRow = ['2', 'Submission 2', $messageNoModerationStage, 'Author 2', $statusTxt, $submitterIsScieloJournalTxt, 'Responsible 1;Responsible 2', 'Moderator 1;Moderator 2', 'Declined', 'Nota: Not that good'];
 
         $this->assertEquals($expectedNonDetectedSubmissionRow, $fifthRow);
     }
