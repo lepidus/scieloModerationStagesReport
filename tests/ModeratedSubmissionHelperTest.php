@@ -8,7 +8,17 @@ import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmission
 class ModeratedSubmissionHelperTest extends TestCase
 {
     private $helper;
+    private $locale = 'pt_BR';
     private $submissionId = 1;
+    private $title = 'Schematics for electric guitars';
+    private $moderationStage = SCIELO_MODERATION_STAGE_FORMAT;
+    private $submitterName = 'Leo Fender';
+    private $submissionStatus = STATUS_QUEUED;
+    private $submitterIsScieloJournal = false;
+    private $responsibles = ['Taylor Miranda', 'Vinicius Dias'];
+    private $areaModerators = ['Seizi Tagima', 'Tiguez'];
+    private $finalDecision = '';
+    private $notes = ['These schematics are game-changing!', 'The quality is very good'];
 
     public function setUp(): void
     {
@@ -147,13 +157,32 @@ class ModeratedSubmissionHelperTest extends TestCase
 
     public function testGetSubmissionStageWhichHasData(): void
     {
-        $formatStageId = SCIELO_MODERATION_STAGE_FORMAT;
         $mockedDAO = $this->createMock(ModerationStageDAO::class);
-        $mockedDAO->method('getSubmissionModerationStage')->willReturn($formatStageId);
+        $mockedDAO->method('getSubmissionModerationStage')->willReturn($this->moderationStage);
 
         $this->helper->setDAO($mockedDAO);
         $submissionModerationStage = $this->helper->getSubmissionModerationStage($this->submissionId);
 
-        $this->assertEquals($formatStageId, $submissionModerationStage);
+        $this->assertEquals($this->moderationStage, $submissionModerationStage);
+    }
+
+    public function testHelperCreatesModeratedSubmission(): void
+    {
+        $mockedDAO = $this->createMock(ModerationStageDAO::class);
+        $mockedDAO->method('getSubmissionModerationStage')->willReturn($this->moderationStage);
+        $mockedDAO->method('getTitle')->willReturn($this->title);
+        $mockedDAO->method('getSubmissionModerationStage')->willReturn($this->moderationStage);
+        $mockedDAO->method('getSubmitterData')->willReturn([$this->submitterName, $this->submitterIsScieloJournal]);
+        $mockedDAO->method('getSubmissionStatus')->willReturn($this->submissionStatus);
+        $mockedDAO->method('getResponsibles')->willReturn($this->responsibles);
+        $mockedDAO->method('getAreaModerators')->willReturn($this->areaModerators);
+        $mockedDAO->method('getFinalDecision')->willReturn($this->finalDecision);
+        $mockedDAO->method('getNotes')->willReturn($this->notes);
+
+        $this->helper->setDAO($mockedDAO);
+        $moderatedSubmission = $this->helper->createModeratedSubmission($this->submissionId, $this->locale);
+
+        $expectedModeratedSubmission = new ModeratedSubmission($this->submissionId, $this->title, $this->moderationStage, $this->submitterName, $this->submissionStatus, $this->submitterIsScieloJournal, $this->responsibles, $this->areaModerators, $this->finalDecision, $this->notes);
+        $this->assertEquals($expectedModeratedSubmission, $moderatedSubmission);
     }
 }
