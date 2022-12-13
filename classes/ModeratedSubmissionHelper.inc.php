@@ -16,6 +16,31 @@ class ModeratedSubmissionHelper
         $this->moderationStageDAO = $dao;
     }
 
+    public function createModeratedSubmission($submissionId, $locale): ModeratedSubmission
+    {
+        $title = $this->moderationStageDAO->getTitle($submissionId, $locale);
+        $moderationStage = $this->getSubmissionModerationStage($submissionId);
+        list($submitterName, $submitterIsScieloJournal) = $this->moderationStageDAO->getSubmitterData($submissionId);
+        $submissionStatus = $this->moderationStageDAO->getSubmissionStatus($submissionId);
+        $responsibles = $this->moderationStageDAO->getResponsibles($submissionId);
+        $areaModerators = $this->moderationStageDAO->getAreaModerators($submissionId);
+        $finalDecision = $this->moderationStageDAO->getFinalDecision($submissionId, $locale);
+        $notes = $this->moderationStageDAO->getNotes($submissionId);
+        
+        return new ModeratedSubmission(
+            $submissionId,
+            $title,
+            $moderationStage,
+            $submitterName,
+            $submissionStatus,
+            $submitterIsScieloJournal,
+            $responsibles,
+            $areaModerators,
+            $finalDecision,
+            $notes
+        );
+    }
+
     public function getSubmissionModerationStage($submissionId)
     {
         $submissionStage = $this->moderationStageDAO->getSubmissionModerationStage($submissionId);

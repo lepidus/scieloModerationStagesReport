@@ -169,7 +169,6 @@ class ModeratedSubmissionHelperTest extends TestCase
     public function testHelperCreatesModeratedSubmission(): void
     {
         $mockedDAO = $this->createMock(ModerationStageDAO::class);
-        $mockedDAO->method('getSubmissionModerationStage')->willReturn($this->moderationStage);
         $mockedDAO->method('getTitle')->willReturn($this->title);
         $mockedDAO->method('getSubmissionModerationStage')->willReturn($this->moderationStage);
         $mockedDAO->method('getSubmitterData')->willReturn([$this->submitterName, $this->submitterIsScieloJournal]);
