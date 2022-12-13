@@ -27,6 +27,13 @@ class ModeratedSubmission
         $this->notes = $notes;
     }
 
+    public function hasModerationStage(): bool
+    {
+        if(is_null($this->moderationStage)) return false;
+
+        return true;
+    }
+    
     public function getModerationStage(): string
     {
         if(is_null($this->moderationStage))
