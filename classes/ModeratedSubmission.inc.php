@@ -29,9 +29,7 @@ class ModeratedSubmission
 
     public function hasModerationStage(): bool
     {
-        if(is_null($this->moderationStage)) return false;
-
-        return true;
+        return !is_null($this->moderationStage);
     }
     
     public function getModerationStage(): string
