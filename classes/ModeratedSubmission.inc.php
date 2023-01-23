@@ -31,12 +31,13 @@ class ModeratedSubmission
     {
         return !is_null($this->moderationStage);
     }
-    
+
     public function getModerationStage(): string
     {
-        if(is_null($this->moderationStage))
+        if (is_null($this->moderationStage)) {
             return __('plugins.reports.scieloModerationStagesReport.stages.noModerationStage');
-        
+        }
+
         $stageMap = [
             SCIELO_MODERATION_STAGE_FORMAT => 'plugins.reports.scieloModerationStagesReport.stages.formatStage',
             SCIELO_MODERATION_STAGE_CONTENT => 'plugins.reports.scieloModerationStagesReport.stages.contentStage',
@@ -66,25 +67,28 @@ class ModeratedSubmission
 
     public function getResponsibles(): string
     {
-        if(empty($this->responsibles))
+        if (empty($this->responsibles)) {
             return __('plugins.reports.scieloModerationStagesReport.noResponsibles');
-        
+        }
+
         return implode(";", $this->responsibles);
     }
 
     public function getAreaModerators(): string
     {
-        if(empty($this->areaModerators))
+        if (empty($this->areaModerators)) {
             return __('plugins.reports.scieloModerationStagesReport.noAreaModerators');
-        
+        }
+
         return implode(";", $this->areaModerators);
     }
 
     public function getNotes(): string
     {
-        if(empty($this->notes))
+        if (empty($this->notes)) {
             return __('plugins.reports.scieloModerationStagesReport.noNotes');
-        
+        }
+
         return trim(preg_replace('/\s+/', ' ', "Nota: " . implode(" Nota: ", $this->notes)));
     }
 

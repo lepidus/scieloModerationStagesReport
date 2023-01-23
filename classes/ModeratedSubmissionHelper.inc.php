@@ -26,7 +26,7 @@ class ModeratedSubmissionHelper
         $areaModerators = $this->moderationStageDAO->getAreaModerators($submissionId);
         $finalDecision = $this->moderationStageDAO->getFinalDecision($submissionId, $locale);
         $notes = $this->moderationStageDAO->getNotes($submissionId);
-        
+
         return new ModeratedSubmission(
             $submissionId,
             $title,

@@ -14,24 +14,25 @@ import('lib.pkp.classes.db.DAO');
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Support\Collection;
 
-class ModerationStageDAO extends DAO {
-    
+class ModerationStageDAO extends DAO
+{
     private const SUBMISSION_STAGE_ID = 5;
-    
-    public function getAllSubmissionsIds(): array {
+
+    public function getAllSubmissionsIds(): array
+    {
         $result = Capsule::table('submissions')
             ->whereNotNull('date_submitted')
             ->select('submission_id')
             ->get();
 
         $submissionIds = [];
-        foreach($result->toArray() as $row) {
+        foreach ($result->toArray() as $row) {
             $submissionIds[] = get_object_vars($row)['submission_id'];
         }
 
         return $submissionIds;
     }
-    
+
     public function getTitle($submissionId, $locale): string
     {
         $result = Capsule::table('submissions')
@@ -53,13 +54,15 @@ class ModerationStageDAO extends DAO {
             $titles[$locale] = $title;
         }
 
-        if(array_key_exists($locale, $titles))
+        if (array_key_exists($locale, $titles)) {
             return $titles[$locale];
-        
+        }
+
         return array_pop(array_reverse($titles));
     }
 
-    public function getSubmissionModerationStage($submissionId): ?int {
+    public function getSubmissionModerationStage($submissionId): ?int
+    {
         $result = Capsule::table('submission_settings')
             ->where('submission_id', $submissionId)
             ->where('setting_name', 'currentModerationStage')
@@ -68,8 +71,9 @@ class ModerationStageDAO extends DAO {
 
         return !is_null($result) ? get_object_vars($result)['setting_value'] : null;
     }
-    
-    public function submissionHasUserAssigned($username, $submissionId): bool {
+
+    public function submissionHasUserAssigned($username, $submissionId): bool
+    {
         $result = Capsule::table('users')
             ->where('username', $username)
             ->select('user_id')
@@ -83,16 +87,19 @@ class ModerationStageDAO extends DAO {
 
         return $countAssignedUsers == 1;
     }
-    
-    public function submissionHasResponsibles($submissionId): bool {
+
+    public function submissionHasResponsibles($submissionId): bool
+    {
         return $this->countAssignedUsersOfGroup($submissionId, "RESP") > 0;
     }
-    
-    public function countAreaModerators($submissionId): int {
+
+    public function countAreaModerators($submissionId): int
+    {
         return $this->countAssignedUsersOfGroup($submissionId, "AM");
     }
-    
-    public function submissionHasNotes($submissionId): bool {
+
+    public function submissionHasNotes($submissionId): bool
+    {
         $numNotes = Capsule::table('notes')
             ->where('assoc_type', ASSOC_TYPE_SUBMISSION)
             ->where('assoc_id', $submissionId)
@@ -101,7 +108,8 @@ class ModerationStageDAO extends DAO {
         return $numNotes > 0;
     }
 
-    private function countAssignedUsersOfGroup($submissionId, $userGroupAbbrev): int {
+    private function countAssignedUsersOfGroup($submissionId, $userGroupAbbrev): int
+    {
         $result = Capsule::table('user_group_settings')
             ->where('setting_name', 'abbrev')
             ->where('setting_value', $userGroupAbbrev)
@@ -113,7 +121,7 @@ class ModerationStageDAO extends DAO {
             ->where('submission_id', $submissionId)
             ->where('user_group_id', $userGroupId)
             ->count();
-        
+
         return $countAssignedUsersOfGroup;
     }
 
@@ -144,10 +152,11 @@ class ModerationStageDAO extends DAO {
         $userGroupDao = DAORegistry::getDAO('UserGroupDAO');
 
         $submitterUserGroups = $userGroupDao->getByUserId($submitterId);
-        while($userGroup = $submitterUserGroups->next()) {
+        while ($userGroup = $submitterUserGroups->next()) {
             $journalGroupAbbrev = "SciELO";
-            if($userGroup->getLocalizedData('abbrev', 'pt_BR') == $journalGroupAbbrev)
+            if ($userGroup->getLocalizedData('abbrev', 'pt_BR') == $journalGroupAbbrev) {
                 return true;
+            }
         }
 
         return false;
@@ -159,7 +168,7 @@ class ModerationStageDAO extends DAO {
         ->where('submission_id', '=', $submissionId)
         ->select('status')
         ->first();
-        
+
         return get_object_vars($result)['status'];
     }
 
@@ -189,7 +198,7 @@ class ModerationStageDAO extends DAO {
         $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
         $userGroupDao = DAORegistry::getDAO('UserGroupDAO');
         $userDao = DAORegistry::getDAO('UserDAO');
-        
+
         $areaModeratorUsers =  array();
         $stageAssignmentsResults = $stageAssignmentDao->getBySubmissionAndRoleId($submissionId, ROLE_ID_SUB_EDITOR, self::SUBMISSION_STAGE_ID);
 
@@ -235,8 +244,7 @@ class ModerationStageDAO extends DAO {
         $decision = get_object_vars($result)['decision'];
         if ($decision == SUBMISSION_EDITOR_DECISION_ACCEPT) {
             return __('common.accepted', [], $locale);
-        }
-        else {
+        } else {
             return  __('common.declined', [], $locale);
         }
     }
@@ -254,8 +262,7 @@ class ModerationStageDAO extends DAO {
             $note = get_object_vars($noteObject);
             array_push($notes, $note['contents']);
         }
-        
+
         return $notes;
     }
-
 }

@@ -6,13 +6,14 @@ import('classes.submission.Submission');
 import('plugins.generic.scieloModerationStages.classes.ModerationStage');
 import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReport');
 
-class ModerationStagesReportTest extends TestCase {
-    
+class ModerationStagesReportTest extends TestCase
+{
     private $report;
     private $filePath = "/tmp/test.csv";
     private $UTF8_BOM;
 
-    public function setUp() : void {
+    public function setUp(): void
+    {
         $this->UTF8_BOM = chr(0xEF).chr(0xBB).chr(0xBF);
         $submissions = [
             new ModeratedSubmission(1, 'Submission 1', SCIELO_MODERATION_STAGE_FORMAT, 'Author 1', STATUS_PUBLISHED, false, ['Responsible 1', 'Responsible 2'], ['Moderator 1', 'Moderator 2'], 'Accepted', ['Very good'])
@@ -21,25 +22,29 @@ class ModerationStagesReportTest extends TestCase {
         $nonDetectedSubmissions = [
             new ModeratedSubmission(2, 'Submission 2', null, 'Author 2', STATUS_DECLINED, false, ['Responsible 1', 'Responsible 2'], ['Moderator 1', 'Moderator 2'], 'Declined', ['Not that good'])
         ];
-        
+
         $this->report = new ModerationStagesReport($submissions, $nonDetectedSubmissions);
     }
 
-    public function tearDown() : void {
-        if (file_exists(($this->filePath))) 
+    public function tearDown(): void
+    {
+        if (file_exists(($this->filePath))) {
             unlink($this->filePath);
+        }
     }
 
-    protected function createCSVReport() : void {
+    protected function createCSVReport(): void
+    {
         $csvFile = fopen($this->filePath, 'wt');
         $this->report->buildCSV($csvFile);
         fclose($csvFile);
     }
 
-    public function testGeneratedReportHasPrimaryHeaders(): void {
+    public function testGeneratedReportHasPrimaryHeaders(): void
+    {
         $this->createCSVReport();
         $csvFile = fopen($this->filePath, 'r');
-        
+
         fread($csvFile, strlen($this->UTF8_BOM));
 
         $firstRow = fgetcsv($csvFile);
@@ -59,11 +64,12 @@ class ModerationStagesReportTest extends TestCase {
 
         $this->assertEquals($expectedPrimaryHeaders, $firstRow);
     }
-    
-    public function testGeneratedReportHasSecondaryHeaders(): void {
+
+    public function testGeneratedReportHasSecondaryHeaders(): void
+    {
         $this->createCSVReport();
         $csvRows = array_map('str_getcsv', file($this->filePath));
-        
+
         $expectedSecondaryHeaders = [
             __("plugins.reports.scieloModerationStagesReport.headers.nonDetectedSubmissions"),
         ];
@@ -71,11 +77,12 @@ class ModerationStagesReportTest extends TestCase {
         $this->assertEquals($expectedSecondaryHeaders, $fourthRow);
     }
 
-    public function testGeneratedReportHasSubmissions(): void {
+    public function testGeneratedReportHasSubmissions(): void
+    {
         $this->createCSVReport();
         $csvRows = array_map('str_getcsv', file($this->filePath));
         $secondRow = $csvRows[1];
-        
+
         $formatModerationTxt = __('plugins.reports.scieloModerationStagesReport.stages.formatStage');
         $statusTxt = __('submission.status.published');
         $submitterIsScieloJournalTxt = __('common.no');
@@ -84,7 +91,8 @@ class ModerationStagesReportTest extends TestCase {
         $this->assertEquals($expectedSubmissionRow, $secondRow);
     }
 
-    public function testGeneratedReportHasNonDetectedSubmissions(): void {
+    public function testGeneratedReportHasNonDetectedSubmissions(): void
+    {
         $this->createCSVReport();
         $csvRows = array_map('str_getcsv', file($this->filePath));
         $fifthRow = $csvRows[4];
@@ -97,7 +105,8 @@ class ModerationStagesReportTest extends TestCase {
         $this->assertEquals($expectedNonDetectedSubmissionRow, $fifthRow);
     }
 
-    public function testGeneratedReportHasUTF8Bytes(): void {
+    public function testGeneratedReportHasUTF8Bytes(): void
+    {
         $this->createCSVReport();
 
         $csvFile = fopen($this->filePath, 'r');
@@ -106,5 +115,4 @@ class ModerationStagesReportTest extends TestCase {
 
         $this->assertEquals($this->UTF8_BOM, $BOMRead);
     }
-
 }

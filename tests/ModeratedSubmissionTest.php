@@ -30,7 +30,7 @@ class ModeratedSubmissionTest extends TestCase
         $areaModerationTxt = __('plugins.reports.scieloModerationStagesReport.stages.areaStage');
         $statusTxt = __('submission.status.published');
         $submitterIsScieloJournalTxt = __('common.no');
-        
+
         $expectedRecord = [
             1,
             'Schematics for guitar pickups',
