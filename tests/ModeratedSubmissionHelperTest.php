@@ -63,7 +63,7 @@ class ModeratedSubmissionHelperTest extends TestCase
         $this->assertEquals(SCIELO_MODERATION_STAGE_FORMAT, $submissionModerationStage);
     }
 
-    public function testChecksFormatStageCaseTwo(): void
+    public function testChecksFormatStageCaseTwoAndThree(): void
     {
         $mapUsersAssigned = $this->getUsersAssignedMap(["scielo-brasil", "carolinatanigushi"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 0);
