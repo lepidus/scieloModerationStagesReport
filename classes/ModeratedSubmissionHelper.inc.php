@@ -65,12 +65,14 @@ class ModeratedSubmissionHelper
 
     public function checkSubmissionOnFormatStage($submissionId): bool
     {
-        $noResponsibles = !$this->moderationStageDAO->submissionHasResponsibles($submissionId);
+        $hasResponsibles = $this->moderationStageDAO->submissionHasResponsibles($submissionId);
         $scieloBrasilAssigned = $this->moderationStageDAO->submissionHasUserAssigned("scielo-brasil", $submissionId);
         $carolinaAssigned = $this->moderationStageDAO->submissionHasUserAssigned("carolinatanigushi", $submissionId);
-        $noNotes = !$this->moderationStageDAO->submissionHasNotes($submissionId);
+        $countAreaModerators = $this->moderationStageDAO->countAreaModerators($submissionId);
+        $hasNotes = $this->moderationStageDAO->submissionHasNotes($submissionId);
 
-        return ($noResponsibles || $scieloBrasilAssigned || $carolinaAssigned) && $noNotes;
+        return (!$hasResponsibles && $countAreaModerators == 0 && !$hasNotes)
+            || ($hasResponsibles && ($carolinaAssigned || $scieloBrasilAssigned) && $countAreaModerators == 0);
     }
 
     public function checkSubmissionOnContentStage($submissionId): bool
