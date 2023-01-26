@@ -85,7 +85,7 @@ class ModerationStageDAO extends DAO
             ->where('user_id', $userId)
             ->count();
 
-        return $countAssignedUsers == 1;
+        return $countAssignedUsers >= 1;
     }
 
     public function submissionHasResponsibles($submissionId): bool
