@@ -1,5 +1,9 @@
 <?php
 
+define('SCIELO_MODERATION_STAGE_REPORT_FORMAT', 1);
+define('SCIELO_MODERATION_STAGE_REPORT_CONTENT', 2);
+define('SCIELO_MODERATION_STAGE_REPORT_AREA', 3);
+
 class ModeratedSubmission
 {
     private $submissionId;
@@ -39,9 +43,9 @@ class ModeratedSubmission
         }
 
         $stageMap = [
-            SCIELO_MODERATION_STAGE_FORMAT => 'plugins.reports.scieloModerationStagesReport.stages.formatStage',
-            SCIELO_MODERATION_STAGE_CONTENT => 'plugins.reports.scieloModerationStagesReport.stages.contentStage',
-            SCIELO_MODERATION_STAGE_AREA => 'plugins.reports.scieloModerationStagesReport.stages.areaStage',
+            SCIELO_MODERATION_STAGE_REPORT_FORMAT => 'plugins.reports.scieloModerationStagesReport.stages.formatStage',
+            SCIELO_MODERATION_STAGE_REPORT_CONTENT => 'plugins.reports.scieloModerationStagesReport.stages.contentStage',
+            SCIELO_MODERATION_STAGE_REPORT_AREA => 'plugins.reports.scieloModerationStagesReport.stages.areaStage',
         ];
 
         return __($stageMap[$this->moderationStage]);

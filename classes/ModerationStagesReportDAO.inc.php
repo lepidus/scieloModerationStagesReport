@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @file plugins/reports/scieloModerationStagesReport/classes/ModerationStageDAO.inc.php
+ * @file plugins/reports/scieloModerationStagesReport/classes/ModerationStagesReportDAO.inc.php
  *
- * @class ModerationStageDAO
+ * @class ModerationStagesReportDAO
  * @ingroup plugins_reports_scieloModerationStagesReport
  *
  * Operations for retrieving data to help identify submissions' moderation stage
@@ -14,7 +14,7 @@ import('lib.pkp.classes.db.DAO');
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Support\Collection;
 
-class ModerationStageDAO extends DAO
+class ModerationStagesReportDAO extends DAO
 {
     private const SUBMISSION_STAGE_ID = 5;
 

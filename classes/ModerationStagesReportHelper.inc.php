@@ -1,20 +1,19 @@
 <?php
 
-import('plugins.generic.scieloModerationStages.classes.ModerationStage');
 import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmissionHelper');
 import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReport');
-import('plugins.reports.scieloModerationStagesReport.classes.ModerationStageDAO');
+import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReportDAO');
 
 class ModerationStagesReportHelper
 {
     public function __construct()
     {
-        $this->moderationStageDAO = new ModerationStageDAO();
+        $this->moderationStagesReportDAO = new ModerationStagesReportDAO();
     }
 
     public function createModerationStagesReport(): ModerationStagesReport
     {
-        $allSubmissionsIds = $this->moderationStageDAO->getAllSubmissionsIds();
+        $allSubmissionsIds = $this->moderationStagesReportDAO->getAllSubmissionsIds();
         $locale = AppLocale::getLocale();
 
         $detectedSubmissions = [];
