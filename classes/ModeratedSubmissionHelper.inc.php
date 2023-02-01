@@ -1,6 +1,5 @@
 <?php
 
-import('plugins.generic.scieloModerationStages.classes.ModerationStage');
 import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmission');
 import('plugins.reports.scieloModerationStagesReport.classes.ModerationStageDAO');
 

@@ -3,7 +3,6 @@
 use PHPUnit\Framework\TestCase;
 
 import('classes.submission.Submission');
-import('plugins.generic.scieloModerationStages.classes.ModerationStage');
 import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReport');
 
 class ModerationStagesReportTest extends TestCase
