@@ -11,7 +11,7 @@ class ModeratedSubmissionTest extends TestCase
     private $submission;
     private $submissionId = 1;
     private $title = 'Schematics for guitar pickups';
-    private $moderationStage = SCIELO_MODERATION_STAGE_AREA;
+    private $moderationStage = SCIELO_MODERATION_STAGE_REPORT_AREA;
     private $submitterName = 'Erico Malagoli';
     private $submissionStatus = STATUS_PUBLISHED;
     private $submitterIsScieloJournal = false;

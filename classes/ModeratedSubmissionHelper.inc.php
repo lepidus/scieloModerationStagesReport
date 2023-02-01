@@ -48,15 +48,15 @@ class ModeratedSubmissionHelper
         }
 
         if ($this->checkSubmissionOnAreaStage($submissionId)) {
-            return SCIELO_MODERATION_STAGE_AREA;
+            return SCIELO_MODERATION_STAGE_REPORT_AREA;
         }
 
         if ($this->checkSubmissionOnContentStage($submissionId)) {
-            return SCIELO_MODERATION_STAGE_CONTENT;
+            return SCIELO_MODERATION_STAGE_REPORT_CONTENT;
         }
 
         if ($this->checkSubmissionOnFormatStage($submissionId)) {
-            return SCIELO_MODERATION_STAGE_FORMAT;
+            return SCIELO_MODERATION_STAGE_REPORT_FORMAT;
         }
 
         return null;

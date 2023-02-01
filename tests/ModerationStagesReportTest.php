@@ -15,7 +15,7 @@ class ModerationStagesReportTest extends TestCase
     {
         $this->UTF8_BOM = chr(0xEF).chr(0xBB).chr(0xBF);
         $submissions = [
-            new ModeratedSubmission(1, 'Submission 1', SCIELO_MODERATION_STAGE_FORMAT, 'Author 1', STATUS_PUBLISHED, false, ['Responsible 1', 'Responsible 2'], ['Moderator 1', 'Moderator 2'], 'Accepted', ['Very good'])
+            new ModeratedSubmission(1, 'Submission 1', SCIELO_MODERATION_STAGE_REPORT_FORMAT, 'Author 1', STATUS_PUBLISHED, false, ['Responsible 1', 'Responsible 2'], ['Moderator 1', 'Moderator 2'], 'Accepted', ['Very good'])
         ];
 
         $nonDetectedSubmissions = [
