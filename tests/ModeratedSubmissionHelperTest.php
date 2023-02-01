@@ -27,7 +27,7 @@ class ModeratedSubmissionHelperTest extends TestCase
 
     private function getModerationStageWithMockedDAO($hasResponsibles, $hasNotes, $mapUsersAssigned, $countAreaModerators): string
     {
-        $mockedDAO = $this->createMock(ModerationStageDAO::class);
+        $mockedDAO = $this->createMock(ModerationStagesReportDAO::class);
         $mockedDAO->method('getSubmissionModerationStage')->willReturn(null);
         $mockedDAO->method('submissionHasResponsibles')->willReturn($hasResponsibles);
         $mockedDAO->method('submissionHasNotes')->willReturn($hasNotes);
@@ -155,7 +155,7 @@ class ModeratedSubmissionHelperTest extends TestCase
         $mockedHelper->method('checkSubmissionOnContentStage')->willReturn(false);
         $mockedHelper->method('checkSubmissionOnAreaStage')->willReturn(false);
 
-        $mockedDAO = $this->createMock(ModerationStageDAO::class);
+        $mockedDAO = $this->createMock(ModerationStagesReportDAO::class);
         $mockedDAO->method('getSubmissionModerationStage')->willReturn(null);
         $mockedHelper->setDAO($mockedDAO);
 
@@ -165,7 +165,7 @@ class ModeratedSubmissionHelperTest extends TestCase
 
     public function testGetSubmissionStageWhichHasData(): void
     {
-        $mockedDAO = $this->createMock(ModerationStageDAO::class);
+        $mockedDAO = $this->createMock(ModerationStagesReportDAO::class);
         $mockedDAO->method('getSubmissionModerationStage')->willReturn($this->moderationStage);
 
         $this->helper->setDAO($mockedDAO);
@@ -176,7 +176,7 @@ class ModeratedSubmissionHelperTest extends TestCase
 
     public function testHelperCreatesModeratedSubmission(): void
     {
-        $mockedDAO = $this->createMock(ModerationStageDAO::class);
+        $mockedDAO = $this->createMock(ModerationStagesReportDAO::class);
         $mockedDAO->method('getTitle')->willReturn($this->title);
         $mockedDAO->method('getSubmissionModerationStage')->willReturn($this->moderationStage);
         $mockedDAO->method('getSubmitterData')->willReturn([$this->submitterName, $this->submitterIsScieloJournal]);

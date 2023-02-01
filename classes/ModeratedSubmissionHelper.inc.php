@@ -1,30 +1,30 @@
 <?php
 
 import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmission');
-import('plugins.reports.scieloModerationStagesReport.classes.ModerationStageDAO');
+import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReportDAO');
 
 class ModeratedSubmissionHelper
 {
     public function __construct()
     {
-        $this->moderationStageDAO = new ModerationStageDAO();
+        $this->moderationStagesReportDAO = new ModerationStagesReportDAO();
     }
 
     public function setDAO($dao)
     {
-        $this->moderationStageDAO = $dao;
+        $this->moderationStagesReportDAO = $dao;
     }
 
     public function createModeratedSubmission($submissionId, $locale): ModeratedSubmission
     {
-        $title = $this->moderationStageDAO->getTitle($submissionId, $locale);
+        $title = $this->moderationStagesReportDAO->getTitle($submissionId, $locale);
         $moderationStage = $this->getSubmissionModerationStage($submissionId);
-        list($submitterName, $submitterIsScieloJournal) = $this->moderationStageDAO->getSubmitterData($submissionId);
-        $submissionStatus = $this->moderationStageDAO->getSubmissionStatus($submissionId);
-        $responsibles = $this->moderationStageDAO->getResponsibles($submissionId);
-        $areaModerators = $this->moderationStageDAO->getAreaModerators($submissionId);
-        $finalDecision = $this->moderationStageDAO->getFinalDecision($submissionId, $locale);
-        $notes = $this->moderationStageDAO->getNotes($submissionId);
+        list($submitterName, $submitterIsScieloJournal) = $this->moderationStagesReportDAO->getSubmitterData($submissionId);
+        $submissionStatus = $this->moderationStagesReportDAO->getSubmissionStatus($submissionId);
+        $responsibles = $this->moderationStagesReportDAO->getResponsibles($submissionId);
+        $areaModerators = $this->moderationStagesReportDAO->getAreaModerators($submissionId);
+        $finalDecision = $this->moderationStagesReportDAO->getFinalDecision($submissionId, $locale);
+        $notes = $this->moderationStagesReportDAO->getNotes($submissionId);
 
         return new ModeratedSubmission(
             $submissionId,
@@ -42,7 +42,7 @@ class ModeratedSubmissionHelper
 
     public function getSubmissionModerationStage($submissionId)
     {
-        $submissionStage = $this->moderationStageDAO->getSubmissionModerationStage($submissionId);
+        $submissionStage = $this->moderationStagesReportDAO->getSubmissionModerationStage($submissionId);
         if (!is_null($submissionStage)) {
             return $submissionStage;
         }
@@ -64,11 +64,11 @@ class ModeratedSubmissionHelper
 
     public function checkSubmissionOnFormatStage($submissionId): bool
     {
-        $hasResponsibles = $this->moderationStageDAO->submissionHasResponsibles($submissionId);
-        $scieloBrasilAssigned = $this->moderationStageDAO->submissionHasUserAssigned("scielo-brasil", $submissionId);
-        $carolinaAssigned = $this->moderationStageDAO->submissionHasUserAssigned("carolinatanigushi", $submissionId);
-        $countAreaModerators = $this->moderationStageDAO->countAreaModerators($submissionId);
-        $hasNotes = $this->moderationStageDAO->submissionHasNotes($submissionId);
+        $hasResponsibles = $this->moderationStagesReportDAO->submissionHasResponsibles($submissionId);
+        $scieloBrasilAssigned = $this->moderationStagesReportDAO->submissionHasUserAssigned("scielo-brasil", $submissionId);
+        $carolinaAssigned = $this->moderationStagesReportDAO->submissionHasUserAssigned("carolinatanigushi", $submissionId);
+        $countAreaModerators = $this->moderationStagesReportDAO->countAreaModerators($submissionId);
+        $hasNotes = $this->moderationStagesReportDAO->submissionHasNotes($submissionId);
 
         return (!$hasResponsibles && $countAreaModerators == 0 && !$hasNotes)
             || ($hasResponsibles && ($carolinaAssigned || $scieloBrasilAssigned) && $countAreaModerators == 0);
@@ -76,21 +76,21 @@ class ModeratedSubmissionHelper
 
     public function checkSubmissionOnContentStage($submissionId): bool
     {
-        $abelAssigned = $this->moderationStageDAO->submissionHasUserAssigned("abelpacker", $submissionId);
-        $solangeAssigned = $this->moderationStageDAO->submissionHasUserAssigned("solangesantos", $submissionId);
-        $noAreaModerators = $this->moderationStageDAO->countAreaModerators($submissionId) == 0;
-        $noNotes = !$this->moderationStageDAO->submissionHasNotes($submissionId);
+        $abelAssigned = $this->moderationStagesReportDAO->submissionHasUserAssigned("abelpacker", $submissionId);
+        $solangeAssigned = $this->moderationStagesReportDAO->submissionHasUserAssigned("solangesantos", $submissionId);
+        $noAreaModerators = $this->moderationStagesReportDAO->countAreaModerators($submissionId) == 0;
+        $noNotes = !$this->moderationStagesReportDAO->submissionHasNotes($submissionId);
 
         return ($abelAssigned || $solangeAssigned) && $noAreaModerators && $noNotes;
     }
 
     public function checkSubmissionOnAreaStage($submissionId): bool
     {
-        $abelAssigned = $this->moderationStageDAO->submissionHasUserAssigned("abelpacker", $submissionId);
-        $solangeAssigned = $this->moderationStageDAO->submissionHasUserAssigned("solangesantos", $submissionId);
-        $countAreaModerators = $this->moderationStageDAO->countAreaModerators($submissionId);
-        $hasNotes = $this->moderationStageDAO->submissionHasNotes($submissionId);
-        $hasResponsibles = $this->moderationStageDAO->submissionHasResponsibles($submissionId);
+        $abelAssigned = $this->moderationStagesReportDAO->submissionHasUserAssigned("abelpacker", $submissionId);
+        $solangeAssigned = $this->moderationStagesReportDAO->submissionHasUserAssigned("solangesantos", $submissionId);
+        $countAreaModerators = $this->moderationStagesReportDAO->countAreaModerators($submissionId);
+        $hasNotes = $this->moderationStagesReportDAO->submissionHasNotes($submissionId);
+        $hasResponsibles = $this->moderationStagesReportDAO->submissionHasResponsibles($submissionId);
 
         return (($abelAssigned || $solangeAssigned) && $countAreaModerators == 0 && $hasNotes)
             || (($abelAssigned || $solangeAssigned) && $countAreaModerators == 1)
