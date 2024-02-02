@@ -9,7 +9,7 @@ class ModeratedSubmission
     public const SCIELO_MODERATION_STAGE_REPORT_FORMAT = 1;
     public const SCIELO_MODERATION_STAGE_REPORT_CONTENT = 2;
     public const SCIELO_MODERATION_STAGE_REPORT_AREA = 3;
-    
+
     private $submissionId;
     private $title;
     private $moderationStage;
