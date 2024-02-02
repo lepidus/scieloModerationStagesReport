@@ -2,18 +2,18 @@
 
 use PHPUnit\Framework\TestCase;
 
-import('classes.submission.Submission');
-import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmission');
-import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReportHelper');
+use APP\submission\Submission;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModeratedSubmission;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModerationStagesReportHelper;
 
 class ModeratedSubmissionTest extends TestCase
 {
     private $submission;
     private $submissionId = 1;
     private $title = 'Schematics for guitar pickups';
-    private $moderationStage = SCIELO_MODERATION_STAGE_REPORT_AREA;
+    private $moderationStage = ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_AREA;
     private $submitterName = 'Erico Malagoli';
-    private $submissionStatus = STATUS_PUBLISHED;
+    private $submissionStatus = Submission::STATUS_PUBLISHED;
     private $submitterIsScieloJournal = false;
     private $responsibles = ['Carlos Alberto', 'Vinicius Dias'];
     private $areaModerators = ['Seizi Tagima', 'Tiguez'];
@@ -22,7 +22,18 @@ class ModeratedSubmissionTest extends TestCase
 
     public function setUp(): void
     {
-        $this->submission = new ModeratedSubmission($this->submissionId, $this->title, $this->moderationStage, $this->submitterName, $this->submissionStatus, $this->submitterIsScieloJournal, $this->responsibles, $this->areaModerators, $this->finalDecision, $this->notes);
+        $this->submission = new ModeratedSubmission(
+            $this->submissionId,
+            $this->title,
+            $this->moderationStage,
+            $this->submitterName,
+            $this->submissionStatus,
+            $this->submitterIsScieloJournal,
+            $this->responsibles,
+            $this->areaModerators,
+            $this->finalDecision,
+            $this->notes
+        );
     }
 
     public function testSubmissionRecord(): void

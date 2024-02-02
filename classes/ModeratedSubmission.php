@@ -1,11 +1,15 @@
 <?php
 
-define('SCIELO_MODERATION_STAGE_REPORT_FORMAT', 1);
-define('SCIELO_MODERATION_STAGE_REPORT_CONTENT', 2);
-define('SCIELO_MODERATION_STAGE_REPORT_AREA', 3);
+namespace APP\plugins\reports\scieloModerationStagesReport\classes;
+
+use APP\submission\Submission;
 
 class ModeratedSubmission
 {
+    public const SCIELO_MODERATION_STAGE_REPORT_FORMAT = 1;
+    public const SCIELO_MODERATION_STAGE_REPORT_CONTENT = 2;
+    public const SCIELO_MODERATION_STAGE_REPORT_AREA = 3;
+    
     private $submissionId;
     private $title;
     private $moderationStage;
@@ -43,9 +47,9 @@ class ModeratedSubmission
         }
 
         $stageMap = [
-            SCIELO_MODERATION_STAGE_REPORT_FORMAT => 'plugins.reports.scieloModerationStagesReport.stages.formatStage',
-            SCIELO_MODERATION_STAGE_REPORT_CONTENT => 'plugins.reports.scieloModerationStagesReport.stages.contentStage',
-            SCIELO_MODERATION_STAGE_REPORT_AREA => 'plugins.reports.scieloModerationStagesReport.stages.areaStage',
+            self::SCIELO_MODERATION_STAGE_REPORT_FORMAT => 'plugins.reports.scieloModerationStagesReport.stages.formatStage',
+            self::SCIELO_MODERATION_STAGE_REPORT_CONTENT => 'plugins.reports.scieloModerationStagesReport.stages.contentStage',
+            self::SCIELO_MODERATION_STAGE_REPORT_AREA => 'plugins.reports.scieloModerationStagesReport.stages.areaStage',
         ];
 
         return __($stageMap[$this->moderationStage]);
@@ -53,12 +57,11 @@ class ModeratedSubmission
 
     private function getStatus(): string
     {
-        AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION);
         $statusMap = [
-            STATUS_QUEUED => 'submissions.queued',
-            STATUS_PUBLISHED => 'submission.status.published',
-            STATUS_DECLINED => 'submission.status.declined',
-            STATUS_SCHEDULED => 'submission.status.scheduled'
+            Submission::STATUS_QUEUED => 'submissions.queued',
+            Submission::STATUS_PUBLISHED => 'submission.status.published',
+            Submission::STATUS_DECLINED => 'submission.status.declined',
+            Submission::STATUS_SCHEDULED => 'submission.status.scheduled'
         ];
 
         return __($statusMap[$this->status]);
