@@ -1,8 +1,11 @@
 <?php
 
-import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmissionHelper');
-import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReport');
-import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReportDAO');
+namespace APP\plugins\reports\scieloModerationStagesReport\classes;
+
+use PKP\facades\Locale;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModeratedSubmissionHelper;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModerationStagesReport;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModerationStagesReportDAO;
 
 class ModerationStagesReportHelper
 {
@@ -14,7 +17,7 @@ class ModerationStagesReportHelper
     public function createModerationStagesReport(): ModerationStagesReport
     {
         $allSubmissionsIds = $this->moderationStagesReportDAO->getAllSubmissionsIds();
-        $locale = AppLocale::getLocale();
+        $locale = Locale::getLocale();
 
         $detectedSubmissions = [];
         $nonDetectedSubmissions = [];
