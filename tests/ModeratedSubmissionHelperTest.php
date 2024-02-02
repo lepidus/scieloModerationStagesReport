@@ -2,8 +2,10 @@
 
 use PHPUnit\Framework\TestCase;
 
-import('classes.submission.Submission');
-import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmissionHelper');
+use APP\submission\Submission;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModeratedSubmission;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModerationStagesReportDAO;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModeratedSubmissionHelper;
 
 class ModeratedSubmissionHelperTest extends TestCase
 {
@@ -11,9 +13,9 @@ class ModeratedSubmissionHelperTest extends TestCase
     private $locale = 'pt_BR';
     private $submissionId = 1;
     private $title = 'Schematics for electric guitars';
-    private $moderationStage = SCIELO_MODERATION_STAGE_REPORT_FORMAT;
+    private $moderationStage = ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_FORMAT;
     private $submitterName = 'Leo Fender';
-    private $submissionStatus = STATUS_QUEUED;
+    private $submissionStatus = Submission::STATUS_QUEUED;
     private $submitterIsScieloJournal = false;
     private $responsibles = ['Taylor Miranda', 'Vinicius Dias'];
     private $areaModerators = ['Seizi Tagima', 'Tiguez'];
@@ -60,7 +62,7 @@ class ModeratedSubmissionHelperTest extends TestCase
     {
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(false, false, null, 0);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_FORMAT, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_FORMAT, $submissionModerationStage);
     }
 
     public function testChecksFormatStageCasesTwoAndThree(): void
@@ -68,7 +70,7 @@ class ModeratedSubmissionHelperTest extends TestCase
         $mapUsersAssigned = $this->getUsersAssignedMap(["scielo-brasil", "carolinatanigushi"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 0);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_FORMAT, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_FORMAT, $submissionModerationStage);
     }
 
     public function testChecksFormatStageCaseFour(): void
@@ -76,7 +78,7 @@ class ModeratedSubmissionHelperTest extends TestCase
         $mapUsersAssigned = $this->getUsersAssignedMap(["scielo-brasil", "carolinatanigushi"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, true, $mapUsersAssigned, 0);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_FORMAT, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_FORMAT, $submissionModerationStage);
     }
 
     public function testChecksContentStageCaseOne(): void
@@ -84,7 +86,7 @@ class ModeratedSubmissionHelperTest extends TestCase
         $mapUsersAssigned = $this->getUsersAssignedMap(["abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 0);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_CONTENT, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_CONTENT, $submissionModerationStage);
     }
 
     public function testChecksContentStageCaseTwo(): void
@@ -92,7 +94,7 @@ class ModeratedSubmissionHelperTest extends TestCase
         $mapUsersAssigned = $this->getUsersAssignedMap(["scielo-brasil", "carolinatanigushi", "abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 0);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_CONTENT, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_CONTENT, $submissionModerationStage);
     }
 
     public function testChecksAreaStageCaseOne(): void
@@ -100,7 +102,7 @@ class ModeratedSubmissionHelperTest extends TestCase
         $mapUsersAssigned = $this->getUsersAssignedMap(["abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, true, $mapUsersAssigned, 0);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
     }
 
     public function testChecksAreaStageCaseTwo(): void
@@ -108,7 +110,7 @@ class ModeratedSubmissionHelperTest extends TestCase
         $mapUsersAssigned = $this->getUsersAssignedMap(["scielo-brasil", "carolinatanigushi", "abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, true, $mapUsersAssigned, 0);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
     }
 
     public function testChecksAreaStageCaseThree(): void
@@ -116,7 +118,7 @@ class ModeratedSubmissionHelperTest extends TestCase
         $mapUsersAssigned = $this->getUsersAssignedMap(["abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 1);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
     }
 
     public function testChecksAreaStageCaseFour(): void
@@ -124,28 +126,28 @@ class ModeratedSubmissionHelperTest extends TestCase
         $mapUsersAssigned = $this->getUsersAssignedMap(["scielo-brasil", "carolinatanigushi", "abelpacker", "solangesantos"]);
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, $mapUsersAssigned, 1);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
     }
 
     public function testChecksAreaStageCaseFive(): void
     {
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(true, false, null, 2);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
     }
 
     public function testChecksAreaStageCaseSix(): void
     {
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(false, true, null, 0);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
     }
 
     public function testChecksAreaStageCaseSeven(): void
     {
         $submissionModerationStage = $this->getModerationStageWithMockedDAO(false, false, null, 1);
 
-        $this->assertEquals(SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
+        $this->assertEquals(ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_AREA, $submissionModerationStage);
     }
 
     public function testCantDetectModerationStage(): void

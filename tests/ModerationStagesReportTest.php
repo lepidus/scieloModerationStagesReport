@@ -2,8 +2,8 @@
 
 use PHPUnit\Framework\TestCase;
 
-import('classes.submission.Submission');
-import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReport');
+use APP\submission\Submission;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModerationStagesReport;
 
 class ModerationStagesReportTest extends TestCase
 {

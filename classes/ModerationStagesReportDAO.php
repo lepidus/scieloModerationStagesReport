@@ -9,10 +9,10 @@
  * Operations for retrieving data to help identify submissions' moderation stage
  */
 
-import('lib.pkp.classes.db.DAO');
+namespace APP\plugins\reports\scieloModerationStagesReport\classes;
 
-use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Support\Collection;
+use PKP\db\DAO;
+use Illuminate\Support\Facades\DB;
 
 class ModerationStagesReportDAO extends DAO
 {
