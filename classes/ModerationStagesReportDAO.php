@@ -24,6 +24,9 @@ use PKP\log\event\PKPSubmissionEventLogEntry;
 class ModerationStagesReportDAO extends DAO
 {
     private const SUBMISSION_STAGE_ID = 5;
+    private const AREA_MODERATOR_ABBREV = 'AM';
+    private const RESPONSIBLE_ABBREV = 'RESP';
+    private const SCIELO_JOURNAL_ABBREV = 'SciELO';
 
     public function getAllSubmissionsIds(): array
     {
@@ -97,12 +100,12 @@ class ModerationStagesReportDAO extends DAO
 
     public function submissionHasResponsibles($submissionId): bool
     {
-        return $this->countAssignedUsersOfGroup($submissionId, "RESP") > 0;
+        return $this->countAssignedUsersOfGroup($submissionId, self::RESPONSIBLE_ABBREV) > 0;
     }
 
     public function countAreaModerators($submissionId): int
     {
-        return $this->countAssignedUsersOfGroup($submissionId, "AM");
+        return $this->countAssignedUsersOfGroup($submissionId, self::AREA_MODERATOR_ABBREV);
     }
 
     public function submissionHasNotes($submissionId): bool
@@ -156,10 +159,9 @@ class ModerationStagesReportDAO extends DAO
     private function getSubmitterIsScieloJournal($submitterId): bool
     {
         $submitterUserGroups = Repo::userGroup()->userUserGroups($submitterId);
-        $journalGroupAbbrev = "SciELO";
 
         foreach ($submitterUserGroups as $userGroup) {
-            if ($userGroup->getLocalizedData('abbrev', 'pt_BR') == $journalGroupAbbrev) {
+            if ($userGroup->getLocalizedData('abbrev', 'pt_BR') == self::SCIELO_JOURNAL_ABBREV) {
                 return true;
             }
         }
@@ -179,12 +181,12 @@ class ModerationStagesReportDAO extends DAO
 
     public function getResponsibles($submissionId): array
     {
-        return $this->getUsersAssignedByGroup($submissionId, 'resp');
+        return $this->getUsersAssignedByGroup($submissionId, self::RESPONSIBLE_ABBREV);
     }
 
     public function getAreaModerators($submissionId): array
     {
-        return $this->getUsersAssignedByGroup($submissionId, 'am');
+        return $this->getUsersAssignedByGroup($submissionId, self::AREA_MODERATOR_ABBREV);
     }
 
     private function getUsersAssignedByGroup($submissionId, $userGroupAbbrev): array
@@ -196,7 +198,7 @@ class ModerationStagesReportDAO extends DAO
 
         while ($stageAssignment = $stageAssignmentsResults->next()) {
             $userGroup = Repo::userGroup()->get($stageAssignment->getUserGroupId());
-            $currentUserGroupAbbrev = strtolower($userGroup->getData('abbrev', 'en'));
+            $currentUserGroupAbbrev = $userGroup->getData('abbrev', 'en');
 
             if ($currentUserGroupAbbrev == $userGroupAbbrev) {
                 $user = Repo::user()->get($stageAssignment->getUserId());

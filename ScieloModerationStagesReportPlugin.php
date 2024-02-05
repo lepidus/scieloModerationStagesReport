@@ -13,9 +13,13 @@
  * @brief SciELO Moderation Stages Report plugin
  */
 
-import('lib.pkp.classes.plugins.ReportPlugin');
-import('classes.submission.Submission');
-import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReportHelper');
+namespace APP\plugins\reports\scieloModerationStagesReport;
+
+use PKP\plugins\ReportPlugin;
+use APP\core\Application;
+use APP\submission\Submission;
+use PKP\core\PKPString;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModerationStagesReportHelper;
 
 class ScieloModerationStagesReportPlugin extends ReportPlugin
 {
@@ -23,7 +27,11 @@ class ScieloModerationStagesReportPlugin extends ReportPlugin
     {
         $success = parent::register($category, $path, $mainContextId);
 
-        if ($success && Config::getVar('general', 'installed')) {
+        if (Application::isUnderMaintenance()) {
+            return $success;
+        }
+
+        if ($success && $this->getEnabled($mainContextId)) {
             $this->addLocaleData();
             return $success;
         }
