@@ -205,7 +205,7 @@ class ModerationStagesReportDAO extends DAO
                 array_push($assignedUsers, $user->getFullName());
             }
         }
-        
+
         return $assignedUsers;
     }
 
