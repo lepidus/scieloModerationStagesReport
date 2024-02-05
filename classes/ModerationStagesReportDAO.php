@@ -9,18 +9,28 @@
  * Operations for retrieving data to help identify submissions' moderation stage
  */
 
-import('lib.pkp.classes.db.DAO');
+namespace APP\plugins\reports\scieloModerationStagesReport\classes;
 
-use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Support\Collection;
+use PKP\db\DAO;
+use Illuminate\Support\Facades\DB;
+use APP\core\Application;
+use APP\facades\Repo;
+use PKP\db\DAORegistry;
+use PKP\security\Role;
+use APP\submission\Submission;
+use APP\decision\Decision;
+use PKP\log\event\PKPSubmissionEventLogEntry;
 
 class ModerationStagesReportDAO extends DAO
 {
     private const SUBMISSION_STAGE_ID = 5;
+    private const AREA_MODERATOR_ABBREV = 'AM';
+    private const RESPONSIBLE_ABBREV = 'RESP';
+    private const SCIELO_JOURNAL_ABBREV = 'SciELO';
 
     public function getAllSubmissionsIds(): array
     {
-        $result = Capsule::table('submissions')
+        $result = DB::table('submissions')
             ->whereNotNull('date_submitted')
             ->select('submission_id')
             ->get();
@@ -35,13 +45,13 @@ class ModerationStagesReportDAO extends DAO
 
     public function getTitle($submissionId, $locale): string
     {
-        $result = Capsule::table('submissions')
+        $result = DB::table('submissions')
         ->where('submission_id', '=', $submissionId)
         ->select('current_publication_id')
         ->first();
         $publicationId = get_object_vars($result)['current_publication_id'];
 
-        $result = Capsule::table('publication_settings')
+        $result = DB::table('publication_settings')
         ->where('publication_id', '=', $publicationId)
         ->where('setting_name', '=', 'title')
         ->select('locale', 'setting_value as title')
@@ -63,7 +73,7 @@ class ModerationStagesReportDAO extends DAO
 
     public function getSubmissionModerationStage($submissionId): ?int
     {
-        $result = Capsule::table('submission_settings')
+        $result = DB::table('submission_settings')
             ->where('submission_id', $submissionId)
             ->where('setting_name', 'currentModerationStage')
             ->select('setting_value')
@@ -74,13 +84,13 @@ class ModerationStagesReportDAO extends DAO
 
     public function submissionHasUserAssigned($username, $submissionId): bool
     {
-        $result = Capsule::table('users')
+        $result = DB::table('users')
             ->where('username', $username)
             ->select('user_id')
             ->first();
         $userId = get_object_vars($result)['user_id'];
 
-        $countAssignedUsers = Capsule::table('stage_assignments')
+        $countAssignedUsers = DB::table('stage_assignments')
             ->where('submission_id', $submissionId)
             ->where('user_id', $userId)
             ->count();
@@ -90,18 +100,18 @@ class ModerationStagesReportDAO extends DAO
 
     public function submissionHasResponsibles($submissionId): bool
     {
-        return $this->countAssignedUsersOfGroup($submissionId, "RESP") > 0;
+        return $this->countAssignedUsersOfGroup($submissionId, self::RESPONSIBLE_ABBREV) > 0;
     }
 
     public function countAreaModerators($submissionId): int
     {
-        return $this->countAssignedUsersOfGroup($submissionId, "AM");
+        return $this->countAssignedUsersOfGroup($submissionId, self::AREA_MODERATOR_ABBREV);
     }
 
     public function submissionHasNotes($submissionId): bool
     {
-        $numNotes = Capsule::table('notes')
-            ->where('assoc_type', ASSOC_TYPE_SUBMISSION)
+        $numNotes = DB::table('notes')
+            ->where('assoc_type', Application::ASSOC_TYPE_SUBMISSION)
             ->where('assoc_id', $submissionId)
             ->count();
 
@@ -110,14 +120,14 @@ class ModerationStagesReportDAO extends DAO
 
     private function countAssignedUsersOfGroup($submissionId, $userGroupAbbrev): int
     {
-        $result = Capsule::table('user_group_settings')
+        $result = DB::table('user_group_settings')
             ->where('setting_name', 'abbrev')
             ->where('setting_value', $userGroupAbbrev)
             ->select('user_group_id')
             ->first();
         $userGroupId = get_object_vars($result)['user_group_id'];
 
-        $countAssignedUsersOfGroup = Capsule::table('stage_assignments')
+        $countAssignedUsersOfGroup = DB::table('stage_assignments')
             ->where('submission_id', $submissionId)
             ->where('user_group_id', $userGroupId)
             ->count();
@@ -127,12 +137,12 @@ class ModerationStagesReportDAO extends DAO
 
     public function getSubmitterData($submissionId): array
     {
-        $result = Capsule::table('event_log')
-        ->where('event_type', SUBMISSION_LOG_SUBMISSION_SUBMIT)
-        ->where('assoc_type', ASSOC_TYPE_SUBMISSION)
-        ->where('assoc_id', $submissionId)
-        ->select('user_id')
-        ->get();
+        $result = DB::table('event_log')
+            ->where('event_type', PKPSubmissionEventLogEntry::SUBMISSION_LOG_SUBMISSION_SUBMIT)
+            ->where('assoc_type', Application::ASSOC_TYPE_SUBMISSION)
+            ->where('assoc_id', $submissionId)
+            ->select('user_id')
+            ->get();
         $result = $result->toArray();
 
         if (empty($result)) {
@@ -140,8 +150,7 @@ class ModerationStagesReportDAO extends DAO
         }
 
         $submitterId = get_object_vars($result[0])['user_id'];
-        $userDao = DAORegistry::getDAO('UserDAO');
-        $submitter = $userDao->getById($submitterId);
+        $submitter = Repo::user()->get($submitterId);
         $submitterIsScieloJournal = $this->getSubmitterIsScieloJournal($submitterId);
 
         return [$submitter->getFullName(), $submitterIsScieloJournal];
@@ -149,12 +158,10 @@ class ModerationStagesReportDAO extends DAO
 
     private function getSubmitterIsScieloJournal($submitterId): bool
     {
-        $userGroupDao = DAORegistry::getDAO('UserGroupDAO');
+        $submitterUserGroups = Repo::userGroup()->userUserGroups($submitterId);
 
-        $submitterUserGroups = $userGroupDao->getByUserId($submitterId);
-        while ($userGroup = $submitterUserGroups->next()) {
-            $journalGroupAbbrev = "SciELO";
-            if ($userGroup->getLocalizedData('abbrev', 'pt_BR') == $journalGroupAbbrev) {
+        foreach ($submitterUserGroups as $userGroup) {
+            if ($userGroup->getLocalizedData('abbrev', 'pt_BR') == self::SCIELO_JOURNAL_ABBREV) {
                 return true;
             }
         }
@@ -164,7 +171,7 @@ class ModerationStagesReportDAO extends DAO
 
     public function getSubmissionStatus($submissionId): int
     {
-        $result = Capsule::table('submissions')
+        $result = DB::table('submissions')
         ->where('submission_id', '=', $submissionId)
         ->select('status')
         ->first();
@@ -174,75 +181,63 @@ class ModerationStagesReportDAO extends DAO
 
     public function getResponsibles($submissionId): array
     {
-        $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-        $userGroupDao = DAORegistry::getDAO('UserGroupDAO');
-        $userDao = DAORegistry::getDAO('UserDAO');
-
-        $moderatorUsers =  array();
-        $stageAssignmentsResults = $stageAssignmentDao->getBySubmissionAndRoleId($submissionId, ROLE_ID_SUB_EDITOR, self::SUBMISSION_STAGE_ID);
-
-        while ($stageAssignment = $stageAssignmentsResults->next()) {
-            $user = $userDao->getById($stageAssignment->getUserId(), false);
-            $userGroup = $userGroupDao->getById($stageAssignment->getUserGroupId());
-            $currentUserGroupAbbrev = strtolower($userGroup->getData('abbrev', 'en_US'));
-
-            if ($currentUserGroupAbbrev == 'resp') {
-                array_push($moderatorUsers, $user->getFullName());
-            }
-        }
-        return $moderatorUsers;
+        return $this->getUsersAssignedByGroup($submissionId, self::RESPONSIBLE_ABBREV);
     }
 
     public function getAreaModerators($submissionId): array
     {
-        $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-        $userGroupDao = DAORegistry::getDAO('UserGroupDAO');
-        $userDao = DAORegistry::getDAO('UserDAO');
+        return $this->getUsersAssignedByGroup($submissionId, self::AREA_MODERATOR_ABBREV);
+    }
 
-        $areaModeratorUsers =  array();
-        $stageAssignmentsResults = $stageAssignmentDao->getBySubmissionAndRoleId($submissionId, ROLE_ID_SUB_EDITOR, self::SUBMISSION_STAGE_ID);
+    private function getUsersAssignedByGroup($submissionId, $userGroupAbbrev): array
+    {
+        $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
+
+        $assignedUsers =  array();
+        $stageAssignmentsResults = $stageAssignmentDao->getBySubmissionAndRoleId($submissionId, Role::ROLE_ID_SUB_EDITOR, self::SUBMISSION_STAGE_ID);
 
         while ($stageAssignment = $stageAssignmentsResults->next()) {
-            $user = $userDao->getById($stageAssignment->getUserId(), false);
-            $userGroup = $userGroupDao->getById($stageAssignment->getUserGroupId());
-            $currentUserGroupAbbrev = strtolower($userGroup->getData('abbrev', 'en_US'));
+            $userGroup = Repo::userGroup()->get($stageAssignment->getUserGroupId());
+            $currentUserGroupAbbrev = $userGroup->getData('abbrev', 'en');
 
-            if ($currentUserGroupAbbrev == 'am') {
-                array_push($areaModeratorUsers, $user->getFullName());
+            if ($currentUserGroupAbbrev == $userGroupAbbrev) {
+                $user = Repo::user()->get($stageAssignment->getUserId());
+                array_push($assignedUsers, $user->getFullName());
             }
         }
-        return $areaModeratorUsers;
+
+        return $assignedUsers;
     }
 
     public function getFinalDecision($submissionId, $locale): string
     {
         $submissionStatus = $this->getSubmissionStatus($submissionId);
 
-        $result = Capsule::table('publications')
-        ->where('submission_id', '=', $submissionId)
-        ->select('date_published')
-        ->first();
+        $result = DB::table('publications')
+            ->where('submission_id', '=', $submissionId)
+            ->select('date_published')
+            ->first();
         $datePublished = get_object_vars($result)['date_published'];
 
-        if (!is_null($datePublished) && $submissionStatus == STATUS_PUBLISHED) {
+        if (!is_null($datePublished) && $submissionStatus == Submission::STATUS_PUBLISHED) {
             return __('common.accepted', [], $locale);
         }
 
-        $possibleFinalDecisions = [SUBMISSION_EDITOR_DECISION_ACCEPT, SUBMISSION_EDITOR_DECISION_DECLINE, SUBMISSION_EDITOR_DECISION_INITIAL_DECLINE];
+        $possibleFinalDecisions = [Decision::ACCEPT, Decision::DECLINE, Decision::INITIAL_DECLINE];
 
-        $result = Capsule::table('edit_decisions')
-        ->where('submission_id', $submissionId)
-        ->whereIn('decision', $possibleFinalDecisions)
-        ->orderBy('date_decided', 'asc')
-        ->select('decision')
-        ->first();
+        $result = DB::table('edit_decisions')
+            ->where('submission_id', $submissionId)
+            ->whereIn('decision', $possibleFinalDecisions)
+            ->orderBy('date_decided', 'asc')
+            ->select('decision')
+            ->first();
 
         if (is_null($result)) {
             return "";
         }
 
         $decision = get_object_vars($result)['decision'];
-        if ($decision == SUBMISSION_EDITOR_DECISION_ACCEPT) {
+        if ($decision == Decision::ACCEPT) {
             return __('common.accepted', [], $locale);
         } else {
             return  __('common.declined', [], $locale);
@@ -251,11 +246,11 @@ class ModerationStagesReportDAO extends DAO
 
     public function getNotes($submissionId): array
     {
-        $resultNotes = Capsule::table('notes')
-        ->where('assoc_type', 1048585)
-        ->where('assoc_id', $submissionId)
-        ->select('contents')
-        ->get();
+        $resultNotes = DB::table('notes')
+            ->where('assoc_type', 1048585)
+            ->where('assoc_id', $submissionId)
+            ->select('contents')
+            ->get();
 
         $notes = array();
         foreach ($resultNotes as $noteObject) {

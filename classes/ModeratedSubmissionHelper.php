@@ -1,7 +1,9 @@
 <?php
 
-import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmission');
-import('plugins.reports.scieloModerationStagesReport.classes.ModerationStagesReportDAO');
+namespace APP\plugins\reports\scieloModerationStagesReport\classes;
+
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModeratedSubmission;
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModerationStagesReportDAO;
 
 class ModeratedSubmissionHelper
 {
@@ -48,15 +50,15 @@ class ModeratedSubmissionHelper
         }
 
         if ($this->checkSubmissionOnAreaStage($submissionId)) {
-            return SCIELO_MODERATION_STAGE_REPORT_AREA;
+            return ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_AREA;
         }
 
         if ($this->checkSubmissionOnContentStage($submissionId)) {
-            return SCIELO_MODERATION_STAGE_REPORT_CONTENT;
+            return ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_CONTENT;
         }
 
         if ($this->checkSubmissionOnFormatStage($submissionId)) {
-            return SCIELO_MODERATION_STAGE_REPORT_FORMAT;
+            return ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_FORMAT;
         }
 
         return null;

@@ -1,6 +1,8 @@
 <?php
 
-import('plugins.reports.scieloModerationStagesReport.classes.ModeratedSubmission');
+namespace APP\plugins\reports\scieloModerationStagesReport\classes;
+
+use APP\plugins\reports\scieloModerationStagesReport\classes\ModeratedSubmission;
 
 class ModerationStagesReport
 {
