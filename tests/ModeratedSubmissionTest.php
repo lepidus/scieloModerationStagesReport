@@ -4,7 +4,6 @@ use PHPUnit\Framework\TestCase;
 
 use APP\submission\Submission;
 use APP\plugins\reports\scieloModerationStagesReport\classes\ModeratedSubmission;
-use APP\plugins\reports\scieloModerationStagesReport\classes\ModerationStagesReportHelper;
 
 class ModeratedSubmissionTest extends TestCase
 {
