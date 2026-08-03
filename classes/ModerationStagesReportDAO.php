@@ -43,35 +43,38 @@ class ModerationStagesReportDAO extends DAO
         return $submissionIds;
     }
 
-    public function getTitle($submissionId, $locale): string
+    public function getTitle(int $submissionId, string $locale): string
     {
         $result = DB::table('submissions')
-        ->where('submission_id', '=', $submissionId)
-        ->select('current_publication_id')
-        ->first();
+            ->where('submission_id', '=', $submissionId)
+            ->select('current_publication_id')
+            ->first();
         $publicationId = get_object_vars($result)['current_publication_id'];
 
         $result = DB::table('publication_settings')
-        ->where('publication_id', '=', $publicationId)
-        ->where('setting_name', '=', 'title')
-        ->select('locale', 'setting_value as title')
-        ->get();
+            ->where('publication_id', '=', $publicationId)
+            ->where('setting_name', '=', 'title')
+            ->select('locale', 'setting_value as title')
+            ->get();
 
         $titles = [];
         foreach ($result->toArray() as $row) {
-            $title = get_object_vars($row)['title'];
-            $locale = get_object_vars($row)['locale'];
-            $titles[$locale] = $title;
+            $row = get_object_vars($row);
+            $titles[$row['locale']] = $row['title'];
         }
 
         if (array_key_exists($locale, $titles)) {
             return $titles[$locale];
         }
 
-        return array_pop(array_reverse($titles));
+        if (empty($titles)) {
+            return '';
+        }
+
+        return reset($titles);
     }
 
-    public function getSubmissionModerationStage($submissionId): ?int
+    public function getSubmissionModerationStage(int $submissionId): ?int
     {
         $result = DB::table('submission_settings')
             ->where('submission_id', $submissionId)
@@ -82,12 +85,17 @@ class ModerationStagesReportDAO extends DAO
         return !is_null($result) ? get_object_vars($result)['setting_value'] : null;
     }
 
-    public function submissionHasUserAssigned($username, $submissionId): bool
+    public function submissionHasUserAssigned(string $username, int $submissionId): bool
     {
         $result = DB::table('users')
             ->where('username', $username)
             ->select('user_id')
             ->first();
+
+        if (is_null($result)) {
+            return false;
+        }
+
         $userId = get_object_vars($result)['user_id'];
 
         $countAssignedUsers = DB::table('stage_assignments')
@@ -98,17 +106,17 @@ class ModerationStagesReportDAO extends DAO
         return $countAssignedUsers >= 1;
     }
 
-    public function submissionHasResponsibles($submissionId): bool
+    public function submissionHasResponsibles(int $submissionId): bool
     {
         return $this->countAssignedUsersOfGroup($submissionId, self::RESPONSIBLE_ABBREV) > 0;
     }
 
-    public function countAreaModerators($submissionId): int
+    public function countAreaModerators(int $submissionId): int
     {
         return $this->countAssignedUsersOfGroup($submissionId, self::AREA_MODERATOR_ABBREV);
     }
 
-    public function submissionHasNotes($submissionId): bool
+    public function submissionHasNotes(int $submissionId): bool
     {
         $numNotes = DB::table('notes')
             ->where('assoc_type', Application::ASSOC_TYPE_SUBMISSION)
@@ -118,13 +126,17 @@ class ModerationStagesReportDAO extends DAO
         return $numNotes > 0;
     }
 
-    private function countAssignedUsersOfGroup($submissionId, $userGroupAbbrev): int
+    private function countAssignedUsersOfGroup(int $submissionId, string $userGroupAbbrev): int
     {
         $result = DB::table('user_group_settings')
             ->where('setting_name', 'abbrev')
             ->where('setting_value', $userGroupAbbrev)
             ->select('user_group_id')
             ->first();
+
+        if (is_null($result)) {
+            return 0;
+        }
         $userGroupId = get_object_vars($result)['user_group_id'];
 
         $countAssignedUsersOfGroup = DB::table('stage_assignments')
@@ -135,7 +147,7 @@ class ModerationStagesReportDAO extends DAO
         return $countAssignedUsersOfGroup;
     }
 
-    public function getSubmitterData($submissionId): array
+    public function getSubmitterData(int $submissionId): array
     {
         $result = DB::table('event_log')
             ->where('event_type', PKPSubmissionEventLogEntry::SUBMISSION_LOG_SUBMISSION_SUBMIT)
@@ -146,7 +158,7 @@ class ModerationStagesReportDAO extends DAO
         $result = $result->toArray();
 
         if (empty($result)) {
-            return [null, null];
+            return ['', false];
         }
 
         $submitterId = get_object_vars($result[0])['user_id'];
@@ -156,7 +168,7 @@ class ModerationStagesReportDAO extends DAO
         return [$submitter->getFullName(), $submitterIsScieloJournal];
     }
 
-    private function getSubmitterIsScieloJournal($submitterId): bool
+    private function getSubmitterIsScieloJournal(int $submitterId): bool
     {
         $submitterUserGroups = Repo::userGroup()->userUserGroups($submitterId);
 
@@ -172,9 +184,9 @@ class ModerationStagesReportDAO extends DAO
     public function getSubmissionStatus($submissionId): int
     {
         $result = DB::table('submissions')
-        ->where('submission_id', '=', $submissionId)
-        ->select('status')
-        ->first();
+            ->where('submission_id', '=', $submissionId)
+            ->select('status')
+            ->first();
 
         return get_object_vars($result)['status'];
     }

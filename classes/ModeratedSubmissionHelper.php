@@ -7,6 +7,8 @@ use APP\plugins\reports\scieloModerationStagesReport\classes\ModerationStagesRep
 
 class ModeratedSubmissionHelper
 {
+    private $moderationStagesReportDAO;
+
     public function __construct()
     {
         $this->moderationStagesReportDAO = new ModerationStagesReportDAO();
