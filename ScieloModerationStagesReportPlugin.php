@@ -18,7 +18,6 @@ namespace APP\plugins\reports\scieloModerationStagesReport;
 use PKP\plugins\ReportPlugin;
 use APP\core\Application;
 use APP\submission\Submission;
-use PKP\core\PKPString;
 use APP\plugins\reports\scieloModerationStagesReport\classes\ModerationStagesReportHelper;
 
 class ScieloModerationStagesReportPlugin extends ReportPlugin
@@ -66,7 +65,7 @@ class ScieloModerationStagesReportPlugin extends ReportPlugin
     {
         $context = $request->getContext();
         header('content-type: text/comma-separated-values');
-        $acronym = PKPString::regexp_replace("/[^A-Za-z0-9 ]/", '', $context->getLocalizedAcronym());
+        $acronym = preg_replace('/[^A-Za-z0-9 ]/', '', $context->getLocalizedAcronym());
         header('content-disposition: attachment; filename=submissions' . $acronym . '-' . date('YmdHis') . '.csv');
     }
 }
