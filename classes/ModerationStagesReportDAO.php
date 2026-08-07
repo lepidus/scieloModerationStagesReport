@@ -15,11 +15,11 @@ use PKP\db\DAO;
 use Illuminate\Support\Facades\DB;
 use APP\core\Application;
 use APP\facades\Repo;
-use PKP\db\DAORegistry;
 use PKP\security\Role;
 use APP\submission\Submission;
 use APP\decision\Decision;
 use PKP\log\event\PKPSubmissionEventLogEntry;
+use PKP\stageAssignment\StageAssignment;
 
 class ModerationStagesReportDAO extends DAO
 {
@@ -203,14 +203,14 @@ class ModerationStagesReportDAO extends DAO
 
     private function getUsersAssignedByGroup($submissionId, $userGroupAbbrev): array
     {
-        $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
+        $assignedUsers =  [];
+        $stageAssignmentsResults = StageAssignment::withSubmissionIds([$submissionId])
+            ->withRoleIds([Role::ROLE_ID_SUB_EDITOR])
+            ->get();
 
-        $assignedUsers =  array();
-        $stageAssignmentsResults = $stageAssignmentDao->getBySubmissionAndRoleId($submissionId, Role::ROLE_ID_SUB_EDITOR, self::SUBMISSION_STAGE_ID);
-
-        while ($stageAssignment = $stageAssignmentsResults->next()) {
-            $userGroup = Repo::userGroup()->get($stageAssignment->getUserGroupId());
-            $currentUserGroupAbbrev = $userGroup->getData('abbrev', 'en');
+        foreach ($stageAssignmentsResults as $stageAssignment) {
+            $userGroup = Repo::userGroup()->get($stageAssignment->userGroupId);
+            $currentUserGroupAbbrev = $userGroup->getLocalizedData('abbrev', 'en');
 
             if ($currentUserGroupAbbrev == $userGroupAbbrev) {
                 $user = Repo::user()->get($stageAssignment->getUserId());
