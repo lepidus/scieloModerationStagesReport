@@ -28,9 +28,10 @@ class ModerationStagesReportDAO extends DAO
     private const RESPONSIBLE_ABBREV = 'RESP';
     private const SCIELO_JOURNAL_ABBREV = 'SciELO';
 
-    public function getAllSubmissionsIds(): array
+    public function getAllSubmissionsIds(int $contextId): array
     {
         $result = DB::table('submissions')
+            ->where('context_id', $contextId)
             ->whereNotNull('date_submitted')
             ->select('submission_id')
             ->get();
@@ -128,10 +129,16 @@ class ModerationStagesReportDAO extends DAO
 
     private function countAssignedUsersOfGroup(int $submissionId, string $userGroupAbbrev): int
     {
-        $result = DB::table('user_group_settings')
-            ->where('setting_name', 'abbrev')
-            ->where('setting_value', $userGroupAbbrev)
-            ->select('user_group_id')
+        $submissionContextId = DB::table('submissions')
+            ->where('submission_id', $submissionId)
+            ->value('context_id');
+
+        $result = DB::table('user_group_settings AS ugs')
+            ->join('user_groups AS ug', 'ug.user_group_id', '=', 'ugs.user_group_id')
+            ->where('ug.context_id', $submissionContextId)
+            ->where('ugs.setting_name', 'abbrev')
+            ->where('ugs.setting_value', $userGroupAbbrev)
+            ->select('ugs.user_group_id')
             ->first();
 
         if (is_null($result)) {
