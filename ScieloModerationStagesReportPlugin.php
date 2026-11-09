@@ -55,7 +55,8 @@ class ScieloModerationStagesReportPlugin extends ReportPlugin
     public function display($args, $request)
     {
         $moderationStagesReportHelper = new ModerationStagesReportHelper();
-        $moderationStagesReport = $moderationStagesReportHelper->createModerationStagesReport();
+        $contextId = (int) $request->getContext()->getId();
+        $moderationStagesReport = $moderationStagesReportHelper->createModerationStagesReport($contextId);
 
         $this->emitHttpHeaders($request);
         $csvFile = fopen('php://output', 'wt');
