@@ -115,4 +115,31 @@ class ModerationStagesReportTest extends TestCase
 
         $this->assertEquals($this->UTF8_BOM, $BOMRead);
     }
+
+    public function testGeneratedCsvNeutralizesSpreadsheetFormulas(): void
+    {
+        $submission = new ModeratedSubmission(
+            3,
+            '=HYPERLINK("https://example.com","x")',
+            ModeratedSubmission::SCIELO_MODERATION_STAGE_REPORT_FORMAT,
+            '+cmd',
+            Submission::STATUS_PUBLISHED,
+            false,
+            ['-2+3'],
+            ['@SUM(A1)'],
+            "\tTabbed",
+            []
+        );
+        $this->report = new ModerationStagesReport([$submission], []);
+        $this->createCSVReport();
+        $csvRows = array_map('str_getcsv', file($this->filePath));
+
+        $record = $csvRows[1];
+        $this->assertEquals('3', $record[0]);
+        $this->assertEquals('\'=HYPERLINK("https://example.com","x")', $record[1]);
+        $this->assertEquals("'+cmd", $record[3]);
+        $this->assertEquals("'-2+3", $record[6]);
+        $this->assertEquals("'@SUM(A1)", $record[7]);
+        $this->assertEquals("'\tTabbed", $record[8]);
+    }
 }
