@@ -11,9 +11,9 @@ class ModerationStagesReportHelper
         $this->moderationStagesReportDAO = new ModerationStagesReportDAO();
     }
 
-    public function createModerationStagesReport(): ModerationStagesReport
+    public function createModerationStagesReport(int $contextId): ModerationStagesReport
     {
-        $allSubmissionsIds = $this->moderationStagesReportDAO->getAllSubmissionsIds();
+        $allSubmissionsIds = $this->moderationStagesReportDAO->getAllSubmissionsIds($contextId);
         $locale = AppLocale::getLocale();
 
         $detectedSubmissions = [];
